@@ -1,10 +1,38 @@
 import Filters from '@/components/shared/Filters';
+import HomeCard from '@/components/shared/home/HomeCard';
 import HomeFilters from '@/components/shared/home/HomeFilters';
+import NoResult from '@/components/shared/NoResult';
 import LocalSearchBar from '@/components/shared/search/LocalSearchBar';
 import { Button } from '@/components/ui/button';
 import { HomePageFilters } from '@/constants/filters';
 import Link from 'next/link';
 import React from 'react';
+
+const questions = [
+  {
+    _id: 1,
+    title: 'Cascading Deletes in SQLAlechemy?',
+    tags: [
+      { _id: 1, name: 'database' },
+      { _id: 2, name: 'python' }
+    ],
+    author: 'John Doe',
+    upvotes: 10,
+    views: 100,
+    answers: 2,
+    createdAt: '2021-09-01T12:34:56.000Z'
+  },
+  {
+    _id: 2,
+    title: 'Python Debugging Techniques?',
+    tags: [{ _id: 1, name: 'python' }],
+    author: 'Jane Smith',
+    upvotes: 5,
+    views: 50,
+    answers: 0,
+    createdAt: '2021-08-31T14:45:30.000Z'
+  }
+];
 
 const Home = () => {
   return (
@@ -14,14 +42,18 @@ const Home = () => {
           All Question
         </h1>
 
-        <Link
-          href={'/ask-question'}
-          className='flex justify-end max-sm:w-full'
-        >
-          <Button className=' primary-gradient min-h-[46px] px-4 py-3 !text-light-900'>
-            Ask a Question
-          </Button>
-        </Link>
+        {questions.length > 0 ? (
+          <Link
+            href={'/ask-question'}
+            className='flex justify-end max-sm:w-full'
+          >
+            <Button className=' primary-gradient min-h-[46px] px-4 py-3 !text-light-900'>
+              Ask a Question
+            </Button>
+          </Link>
+        ) : (
+          ''
+        )}
       </div>
 
       <div className='mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center'>
@@ -40,6 +72,18 @@ const Home = () => {
       </div>
 
       <HomeFilters />
+      <div className='mt-10 flex w-full flex-col gap-6'>
+        {questions.length > 0 ? (
+          questions.map((question) => 'QuestionCard')
+        ) : (
+          <NoResult
+            title='There are no questions to show'
+            description='Be the first to break the slience! 🚀 Ask a Qeustion and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡.'
+            link='/ask-question'
+            linkTitle='Ask a Question'
+          />
+        )}
+      </div>
     </>
   );
 };
