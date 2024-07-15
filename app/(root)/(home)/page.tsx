@@ -1,5 +1,8 @@
+import Filters from '@/components/shared/Filters';
+import HomeFilters from '@/components/shared/home/HomeFilters';
 import LocalSearchBar from '@/components/shared/search/LocalSearchBar';
 import { Button } from '@/components/ui/button';
+import { HomePageFilters } from '@/constants/filters';
 import Link from 'next/link';
 import React from 'react';
 
@@ -26,11 +29,17 @@ const Home = () => {
           route='/'
           iconPosition='left'
           imgSrc='/assets/icons/search.svg'
-          placeholder='search for questions...'
+          placeholder='Search for questions...'
           otherClasses='flex-1'
         />
-        {/* Filters */}
+        <Filters
+          filters={HomePageFilters}
+          otherClasses='min-h-[56px] sm:min-width-[170px]'
+          containerClasses='hidden max-md:flex'
+        />
       </div>
+
+      <HomeFilters />
     </>
   );
 };
