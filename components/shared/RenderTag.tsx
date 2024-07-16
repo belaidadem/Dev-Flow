@@ -4,9 +4,9 @@ import Link from 'next/link';
 import React from 'react';
 
 interface Props {
-  _id: number;
+  _id: string;
   name: string;
-  totalQuestions: number;
+  totalQuestions?: number;
   showCount: boolean;
 }
 

@@ -1,6 +1,6 @@
 import Filters from '@/components/shared/Filters';
-import HomeCard from '@/components/shared/home/HomeCard';
-import HomeFilters from '@/components/shared/home/HomeFilters';
+import QuestionCard from '@/components/cards/QuestionCard';
+import HomeFilters from '@/components/home/HomeFilters';
 import NoResult from '@/components/shared/NoResult';
 import LocalSearchBar from '@/components/shared/search/LocalSearchBar';
 import { Button } from '@/components/ui/button';
@@ -10,27 +10,54 @@ import React from 'react';
 
 const questions = [
   {
-    _id: 1,
+    _id: '1',
     title: 'Cascading Deletes in SQLAlechemy?',
     tags: [
-      { _id: 1, name: 'database' },
-      { _id: 2, name: 'python' }
+      {
+        _id: '1',
+        name: 'database'
+      },
+      {
+        _id: '2',
+        name: 'python'
+      }
     ],
-    author: 'John Doe',
-    upvotes: 10,
-    views: 100,
-    answers: 2,
-    createdAt: '2021-09-01T12:34:56.000Z'
+    author: {
+      _id: '1',
+      name: 'John Doe',
+      picture: 'url_to_picture'
+    },
+    upvotes: 1233254,
+    views: 500590,
+    answers: [
+      {
+        /* object representing an answer */
+      }
+    ],
+    createdAt: new Date(
+      '2024-05-01T12:34:56.000Z'
+    ) // Use Date object
   },
   {
-    _id: 2,
+    _id: '2',
     title: 'Python Debugging Techniques?',
-    tags: [{ _id: 1, name: 'python' }],
-    author: 'Jane Smith',
+    tags: [
+      {
+        _id: '1',
+        name: 'python'
+      }
+    ],
+    author: {
+      _id: '2',
+      name: 'Jane Smith',
+      picture: 'url_to_picture'
+    },
     upvotes: 5,
     views: 50,
-    answers: 0,
-    createdAt: '2021-08-31T14:45:30.000Z'
+    answers: [],
+    createdAt: new Date(
+      '2021-08-31T14:45:30.000Z'
+    ) // Use Date object
   }
 ];
 
@@ -74,7 +101,18 @@ const Home = () => {
       <HomeFilters />
       <div className='mt-10 flex w-full flex-col gap-6'>
         {questions.length > 0 ? (
-          questions.map((question) => 'QuestionCard')
+          questions.map((question) => (
+            <QuestionCard
+              key={question._id}
+              _id={question._id}
+              title={question.title}
+              tags={question.tags}
+              author={question.author}
+              upvotes={question.upvotes}
+              views={question.views}
+              createdAt={question.createdAt}
+            />
+          ))
         ) : (
           <NoResult
             title='There are no questions to show'
