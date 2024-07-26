@@ -7,61 +7,11 @@ import { Button } from '@/components/ui/button';
 import { HomePageFilters } from '@/constants/filters';
 import Link from 'next/link';
 import React from 'react';
+import { getQuestions } from '@/lib/actions/question.action';
 
-const questions = [
-  {
-    _id: '1',
-    title: 'Cascading Deletes in SQLAlechemy?',
-    tags: [
-      {
-        _id: '1',
-        name: 'database'
-      },
-      {
-        _id: '2',
-        name: 'python'
-      }
-    ],
-    author: {
-      _id: '1',
-      name: 'John Doe',
-      picture: 'url_to_picture'
-    },
-    upvotes: 1233254,
-    views: 500590,
-    answers: [
-      {
-        /* object representing an answer */
-      }
-    ],
-    createdAt: new Date(
-      '2024-05-01T12:34:56.000Z'
-    ) // Use Date object
-  },
-  {
-    _id: '2',
-    title: 'Python Debugging Techniques?',
-    tags: [
-      {
-        _id: '1',
-        name: 'python'
-      }
-    ],
-    author: {
-      _id: '2',
-      name: 'Jane Smith',
-      picture: 'url_to_picture'
-    },
-    upvotes: 5,
-    views: 50,
-    answers: [],
-    createdAt: new Date(
-      '2021-08-31T14:45:30.000Z'
-    ) // Use Date object
-  }
-];
+const Home = async () => {
+  const result = await getQuestions({});
 
-const Home = () => {
   return (
     <>
       <div className='flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center'>
@@ -69,7 +19,7 @@ const Home = () => {
           All Question
         </h1>
 
-        {questions.length > 0 ? (
+        {result.questions.length > 0 ? (
           <Link
             href={'/ask-question'}
             className='flex justify-end max-sm:w-full'
@@ -100,8 +50,8 @@ const Home = () => {
 
       <HomeFilters />
       <div className='mt-10 flex w-full flex-col gap-6'>
-        {questions.length > 0 ? (
-          questions.map((question) => (
+        {result.questions.length > 0 ? (
+          result.questions.map((question) => (
             <QuestionCard
               key={question._id}
               _id={question._id}

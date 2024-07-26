@@ -22,15 +22,23 @@ import { QuestionsSchema } from '@/lib/validations';
 import { useTheme } from '@/context/ThemeProvider';
 import { Badge } from '../ui/badge';
 import Image from 'next/image';
+import { createQuestion } from '@/lib/actions/question.action';
+import { useRouter, usePathname } from 'next/navigation';
 
 const type: any = 'create';
 
-const Question = () => {
+interface Props {
+  mongoUserId: string;
+}
+
+const Question = ({ mongoUserId }: Props) => {
   const editorRef = useRef<TinyMCEEditor | null>(null);
   const [key, setKey] = useState(0);
   const { mode } = useTheme();
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const path = usePathname();
 
   const handleInputKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -83,14 +91,22 @@ const Question = () => {
     }
   });
 
-  function onSubmit(
+  async function onSubmit(
     values: z.infer<typeof QuestionsSchema>
   ) {
     setIsSubmitting(true);
     try {
       // make a async call to API -> to create a question
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(mongoUserId),
+        path
+      });
       // contain all form data
       // navigate to home page
+      router.push('/');
     } catch (error) {
     } finally {
       setIsSubmitting(false);
@@ -148,9 +164,11 @@ const Question = () => {
                   }}
                   initialValue=''
                   value={content}
-                  onEditorChange={(newContent) =>
-                    setContent(newContent)
-                  }
+                  onBlur={field.onBlur}
+                  onEditorChange={(newContent) => {
+                    setContent(newContent);
+                    field.onChange(newContent);
+                  }}
                   init={{
                     height: 350,
                     menubar: false,
@@ -185,7 +203,7 @@ const Question = () => {
               </FormControl>
               <FormDescription className='body-regular mt-2.5 text-light-500'>
                 Introduce the problem and expand on what you
-                put in the title. Minimum 20 characters.
+                put in the title. Minimum 100 characters.
               </FormDescription>
               <FormMessage className='text-red-500' />
             </FormItem>
