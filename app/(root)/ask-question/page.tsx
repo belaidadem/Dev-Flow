@@ -19,9 +19,9 @@ const Page = async () => {
         Ask a question
       </h1>
       <div className='mt-9'>
-        {/* <Question
+        <Question
           mongoUserId={JSON.stringify(mongoUser._id)}
-        /> */}
+        />
       </div>
     </div>
   );

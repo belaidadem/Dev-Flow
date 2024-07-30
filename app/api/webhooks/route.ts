@@ -11,7 +11,6 @@ import {
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
-  console.log('Received request:', req);
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
