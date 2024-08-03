@@ -15,11 +15,11 @@ export async function getTopInteractiveTags(
   try {
     await connectToDatabase();
 
-    // const { userId } = params;
+    const { userId } = params;
 
-    // const user = await User.findById(userId);
+    const user = await User.findById(userId);
 
-    // if (!user) throw new Error('User not found');
+    if (!user) throw new Error('User not found');
 
     // Find interactions for the user and group by tags...
     // Interaction
@@ -34,19 +34,17 @@ export async function getTopInteractiveTags(
   }
 }
 
-// export interface GetAllTagsParams {
-//   page?: number;
-//   pageSize?: number;
-//   filter?: string;
-//   searchQuery?: string;
-// }
-export async function getAllTags(params: GetAllTagsParams) {
+export async function getAllTags(
+  params: GetAllTagsParams
+) {
   try {
     await connectToDatabase();
 
     // const { page = 1, pageSize = 20, filter, searchQuery } = params;
 
-    const tags = await Tag.find({}).sort({ questions: 1 });
+    const tags = await Tag.find({}).sort({
+      questions: 1
+    });
 
     return { tags };
   } catch (error) {
