@@ -1,4 +1,4 @@
-import Filters from '@/components/shared/Filters';
+import Filters from '@/components/shared/Filter';
 import QuestionCard from '@/components/cards/QuestionCard';
 import HomeFilters from '@/components/home/HomeFilters';
 import NoResult from '@/components/shared/NoResult';

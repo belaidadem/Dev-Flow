@@ -1,5 +1,5 @@
 import UserCard from '@/components/cards/UserCard';
-import Filter from '@/components/shared/Filters';
+import Filter from '@/components/shared/Filter';
 import LocalSearchBar from '@/components/shared/search/LocalSearchBar';
 import { UserFilters } from '@/constants/filters';
 import { getAllUsers } from '@/lib/actions/user.action';
@@ -33,7 +33,10 @@ const Page = async () => {
       <section className='mt-12 flex flex-wrap gap-4'>
         {result.users.length > 0 ? (
           result.users.map((user) => (
-            <UserCard key={user._id} user={user}></UserCard>
+            <UserCard
+              key={user._id}
+              user={user}
+            ></UserCard>
           ))
         ) : (
           <div className='paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center'>

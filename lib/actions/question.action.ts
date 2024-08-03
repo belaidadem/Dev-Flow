@@ -5,6 +5,7 @@ import { connectToDatabase } from '../mongoose';
 import Tag from '@/database/tags.model';
 import {
   CreateQuestionParams,
+  GetQuestionByIdParams,
   GetQuestionsParams
 } from './shared.types';
 import User from '@/database/user.model';
@@ -14,7 +15,7 @@ export async function getQuestions(
   params: GetQuestionsParams
 ) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const questions = await Question.find({})
       .populate({ path: 'tags', model: Tag })
@@ -33,7 +34,7 @@ export async function createQuestion(
 ) {
   // eslint-disable-next-line no-empty
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
     const { title, content, tags, author, path } = params;
 
@@ -67,6 +68,33 @@ export async function createQuestion(
 
     // Increment author's reputation
     revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getQuestionById(
+  params: GetQuestionByIdParams
+) {
+  try {
+    await connectToDatabase();
+
+    const { questionId } = params;
+
+    const question = await Question.findById(questionId)
+      .populate({
+        path: 'author',
+        model: User,
+        select: '_id clerkId name picture'
+      })
+      .populate({
+        path: 'tags',
+        model: Tag,
+        select: '_id name'
+      });
+
+    return question;
   } catch (error) {
     console.log(error);
     throw error;

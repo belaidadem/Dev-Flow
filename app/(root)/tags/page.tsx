@@ -1,5 +1,5 @@
 import TagCard from '@/components/cards/TagCard';
-import Filter from '@/components/shared/Filters';
+import Filter from '@/components/shared/Filter';
 import NoResult from '@/components/shared/NoResult';
 import LocalSearchBar from '@/components/shared/search/LocalSearchBar';
 import { TagFilters } from '@/constants/filters';

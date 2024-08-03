@@ -2,7 +2,10 @@ import Link from 'next/link';
 import React from 'react';
 import RenderTag from '../shared/RenderTag';
 import Metric from '../shared/Metric';
-import { formatNumber, getTimestamp } from '@/lib/utils';
+import {
+  formatNumber,
+  getTimestamp
+} from '@/lib/utils';
 
 interface QuestionProps {
   _id: string;
@@ -58,7 +61,7 @@ const QuestionCard = ({
       </div>
       <div className='flex-between mt-6 w-full flex-wrap gap-3'>
         <Metric
-          imgUrl='/assets/icons/sun.svg'
+          imgUrl={author.picture}
           alt='user'
           value={author.name}
           title={` - asked ${getTimestamp(createdAt)}`}

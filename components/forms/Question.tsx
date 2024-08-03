@@ -3,7 +3,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
 
@@ -23,7 +27,10 @@ import { useTheme } from '@/context/ThemeProvider';
 import { Badge } from '../ui/badge';
 import Image from 'next/image';
 import { createQuestion } from '@/lib/actions/question.action';
-import { useRouter, usePathname } from 'next/navigation';
+import {
+  useRouter,
+  usePathname
+} from 'next/navigation';
 
 const type: any = 'create';
 
@@ -36,7 +43,8 @@ const Question = ({ mongoUserId }: Props) => {
   const [key, setKey] = useState(0);
   const { mode } = useTheme();
   const [content, setContent] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
   const router = useRouter();
   const path = usePathname();
 
@@ -54,12 +62,16 @@ const Question = ({ mongoUserId }: Props) => {
         if (tagValue.length > 15) {
           return form.setError('tags', {
             type: 'required',
-            message: 'Tag must be less then 15 characters.'
+            message:
+              'Tag must be less then 15 characters.'
           });
         }
 
         if (!field.value.includes(tagValue as never)) {
-          form.setValue('tags', [...field.value, tagValue]);
+          form.setValue('tags', [
+            ...field.value,
+            tagValue
+          ]);
           tagInput.value = '';
           form.clearErrors('tags');
         }
@@ -69,7 +81,10 @@ const Question = ({ mongoUserId }: Props) => {
     }
   };
 
-  const handleTagRemove = (tag: string, field: any) => {
+  const handleTagRemove = (
+    tag: string,
+    field: any
+  ) => {
     const newTags = field.value.filter(
       (t: string) => t !== tag
     );
@@ -82,7 +97,9 @@ const Question = ({ mongoUserId }: Props) => {
   }, [mode]);
 
   // form functions
-  const form = useForm<z.infer<typeof QuestionsSchema>>({
+  const form = useForm<
+    z.infer<typeof QuestionsSchema>
+  >({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
       title: '',
@@ -135,8 +152,8 @@ const Question = ({ mongoUserId }: Props) => {
                 />
               </FormControl>
               <FormDescription className='body-regular mt-2.5 text-light-500'>
-                Be specific and imagine you&apos;re asking a
-                question to another person.
+                Be specific and imagine you&apos;re
+                asking a question to another person.
               </FormDescription>
               <FormMessage className='text-red-500' />
             </FormItem>
@@ -197,13 +214,16 @@ const Question = ({ mongoUserId }: Props) => {
                         ? 'oxide-dark'
                         : 'oxide',
                     content_css:
-                      mode === 'dark' ? 'dark' : 'default'
+                      mode === 'dark'
+                        ? 'dark'
+                        : 'default'
                   }}
                 />
               </FormControl>
               <FormDescription className='body-regular mt-2.5 text-light-500'>
-                Introduce the problem and expand on what you
-                put in the title. Minimum 100 characters.
+                Introduce the problem and expand on
+                what you put in the title. Minimum 100
+                characters.
               </FormDescription>
               <FormMessage className='text-red-500' />
             </FormItem>
@@ -215,7 +235,8 @@ const Question = ({ mongoUserId }: Props) => {
           render={({ field }) => (
             <FormItem className='flex w-full flex-col'>
               <FormLabel className='paragraph-semibold text-dark400_light800'>
-                Tags <span className='text-red-500'>*</span>
+                Tags{' '}
+                <span className='text-red-500'>*</span>
               </FormLabel>
               <FormControl className='mt-3.5'>
                 <>
@@ -234,7 +255,10 @@ const Question = ({ mongoUserId }: Props) => {
                           key={tag}
                           className='subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize'
                           onClick={() => {
-                            handleTagRemove(tag, field);
+                            handleTagRemove(
+                              tag,
+                              field
+                            );
                           }}
                         >
                           {tag}
@@ -253,8 +277,8 @@ const Question = ({ mongoUserId }: Props) => {
               </FormControl>
               <FormDescription className='body-regular mt-2.5 text-light-500'>
                 Add up to 3 tags to describe what your
-                question is about. You need to press enter
-                to add a tag.
+                question is about. You need to press
+                enter to add a tag.
               </FormDescription>
               <FormMessage className='text-red-500' />
             </FormItem>
