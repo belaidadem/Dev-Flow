@@ -10,6 +10,7 @@ import {
 } from './shared.types';
 import User from '@/database/user.model';
 import { revalidatePath } from 'next/cache';
+import Answer from '@/database/answer.model';
 
 export async function getQuestions(
   params: GetQuestionsParams
@@ -36,7 +37,8 @@ export async function createQuestion(
   try {
     await connectToDatabase();
 
-    const { title, content, tags, author, path } = params;
+    const { title, content, tags, author, path } =
+      params;
 
     // create question
     const question = await Question.create({
@@ -49,7 +51,9 @@ export async function createQuestion(
 
     for (const tag of tags) {
       const existingTag = await Tag.findOneAndUpdate(
-        { name: { $regex: new RegExp(`^${tag}$`, 'i') } },
+        {
+          name: { $regex: new RegExp(`^${tag}$`, 'i') }
+        },
         {
           $setOnInsert: { name: tag },
           $addToSet: { questions: question._id }
@@ -82,7 +86,9 @@ export async function getQuestionById(
 
     const { questionId } = params;
 
-    const question = await Question.findById(questionId)
+    const question = await Question.findById(
+      questionId
+    )
       .populate({
         path: 'author',
         model: User,
@@ -97,6 +103,71 @@ export async function getQuestionById(
     return question;
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+}
+
+interface Props {
+  type: string;
+  itemid: string;
+  userid: string;
+  action: string;
+  hasupVoted: boolean;
+  hasdownVoted: boolean;
+  path: string;
+}
+
+export async function voteQuestion({
+  type,
+  itemid,
+  userid,
+  action,
+  hasupVoted,
+  hasdownVoted,
+  path
+}: Props) {
+  try {
+    await connectToDatabase();
+
+    let update;
+
+    if (action === 'upvote') {
+      if (hasupVoted) {
+        update = { $pull: { upvotes: userid } };
+      } else {
+        update = {
+          $push: { upvotes: userid },
+          $pull: { downvotes: userid } // Remove the downvote if it exists
+        };
+      }
+    } else if (action === 'downvote') {
+      if (hasdownVoted) {
+        update = { $pull: { downvotes: userid } };
+      } else {
+        update = {
+          $push: { downvotes: userid },
+          $pull: { upvotes: userid } // Remove the upvote if it exists
+        };
+      }
+    }
+
+    const result = await (
+      type === 'question' ? Question : Answer
+    ).findByIdAndUpdate({ _id: itemid }, update, {
+      new: true
+    });
+
+    if (!result) {
+      console.error('Question not found');
+      throw new Error('Question not found');
+    }
+
+    // revalidatePath(path);
+    revalidatePath(path);
+
+    return JSON.stringify(result);
+  } catch (error) {
+    console.error('Error updating vote:', error);
     throw error;
   }
 }

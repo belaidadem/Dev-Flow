@@ -3,7 +3,7 @@ import AllAnswers from '@/components/shared/AllAnswers';
 import Metric from '@/components/shared/Metric';
 import ParseHTML from '@/components/shared/ParseHTML';
 import RenderTag from '@/components/shared/RenderTag';
-import { getAllAnsewrs } from '@/lib/actions/answer.action';
+import Votes from '@/components/shared/Votes';
 import { getQuestionById } from '@/lib/actions/question.action';
 import { getUserById } from '@/lib/actions/user.action';
 import {
@@ -55,7 +55,22 @@ const Page = async ({ params }: Params) => {
             </p>
           </Link>
           <div className='flex justify-end'>
-            VOTTING
+            <Votes
+              type='question'
+              itemId={JSON.stringify(result._id)}
+              userId={JSON.stringify(mongoUser._id)}
+              upvotes={result.upvotes.length}
+              hasupVoted={result.upvotes.includes(
+                mongoUser._id
+              )}
+              downvotes={result.downvotes?.length}
+              hasdownVoted={result.downvotes?.includes(
+                mongoUser._id
+              )}
+              hasSaved={mongoUser?.saved.includes(
+                result._id
+              )}
+            />
           </div>
         </div>
         <h2 className='h2-semibold text-dark200_light900 mt-3.5 w-full text-left'>

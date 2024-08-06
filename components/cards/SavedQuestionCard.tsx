@@ -1,11 +1,15 @@
+'use client';
+
 import Link from 'next/link';
 import React from 'react';
+import Image from 'next/image';
 import RenderTag from '../shared/RenderTag';
 import Metric from '../shared/Metric';
 import {
   formatNumber,
   getTimestamp
 } from '@/lib/utils';
+import { saveQuestion } from '@/lib/actions/user.action';
 
 interface QuestionProps {
   _id: string;
@@ -19,22 +23,46 @@ interface QuestionProps {
     name: string;
     picture: string;
   };
+  saved: boolean;
   upvotes: Array<string>;
   views: number;
-  answers: Array<object>;
+  answers: Array<object>; // Added this to match QuestionCard
   createdAt: Date;
 }
 
-const QuestionCard = ({
+const SavedQuestionCard = ({
   _id,
   title,
   tags,
   author,
+  saved,
   upvotes,
   views,
-  answers = [],
+  answers = [], // Default value for answers
   createdAt
 }: QuestionProps) => {
+  const handleSave = async () => {
+    await saveQuestion({
+      itemid: _id,
+      userid: author._id,
+      hasSaved: saved,
+      path: '/collection'
+    });
+  };
+
+  console.log(
+    _id,
+    title,
+    tags,
+    author,
+    saved,
+    upvotes,
+    views,
+    createdAt
+  );
+
+  createdAt = new Date(createdAt);
+
   return (
     <div className='card-wrapper rounded-[10px] p-9 sm:px-11'>
       <div className='flex flex-col-reverse items-start justify-between gap-5 sm:flex-row'>
@@ -48,6 +76,18 @@ const QuestionCard = ({
             </h3>
           </Link>
         </div>
+        <Image
+          src={
+            saved
+              ? '/assets/icons/star-filled.svg'
+              : '/assets/icons/star-red.svg'
+          }
+          width={18}
+          height={18}
+          alt='star'
+          className={`cursor-pointer`}
+          onClick={handleSave}
+        />
       </div>
       <div className='mt-3.5 flex flex-wrap gap-2'>
         {tags.map((tag) => (
@@ -79,7 +119,7 @@ const QuestionCard = ({
         <Metric
           imgUrl='/assets/icons/message.svg'
           alt='answers'
-          value={formatNumber(answers.length) || 0}
+          value={formatNumber(answers.length) || 0} // Added answers to match QuestionCard
           title=' Answers'
           textStyles='small-medium text-dark400_light800'
         />
@@ -95,4 +135,4 @@ const QuestionCard = ({
   );
 };
 
-export default QuestionCard;
+export default SavedQuestionCard;

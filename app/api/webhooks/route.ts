@@ -91,7 +91,6 @@ export async function POST(req: Request) {
         },
         path: `/profile/${id}`
       });
-      console.log('user.updated');
       return NextResponse.json({
         message: 'OK',
         user: mongoUser
@@ -100,7 +99,9 @@ export async function POST(req: Request) {
 
     if (eventType === 'user.deleted') {
       const { id } = evt.data;
-      const deletedUser = await deleteUser({ clerkId: id });
+      const deletedUser = await deleteUser({
+        clerkId: id
+      });
       return NextResponse.json({
         message: 'OK',
         user: deletedUser
@@ -110,6 +111,8 @@ export async function POST(req: Request) {
     return new Response('', { status: 201 });
   } catch (err) {
     console.error('Error processing webhook:', err);
-    return new Response('Error occurred', { status: 400 });
+    return new Response('Error occurred', {
+      status: 400
+    });
   }
 }

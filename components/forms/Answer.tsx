@@ -58,9 +58,8 @@ const Answer = ({
     values: z.infer<typeof AnswerSchema>
   ) => {
     setIsSubmitting(true);
-    console.log(question, authorId, questionId);
     try {
-      const { answer } = await createAnswer({
+      await createAnswer({
         author: JSON.parse(authorId),
         content: values.answer,
         question: JSON.parse(questionId),
