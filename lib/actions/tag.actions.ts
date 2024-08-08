@@ -5,9 +5,11 @@ import User from '@/database/user.model';
 import { connectToDatabase } from '../mongoose';
 import {
   GetAllTagsParams,
+  GetQuestionsByTagIdParams,
   GetTopInteractedTagsParams
 } from './shared.types';
 import Tag from '@/database/tags.model';
+import Question from '@/database/question.model';
 
 export async function getTopInteractiveTags(
   params: GetTopInteractedTagsParams
@@ -47,6 +49,45 @@ export async function getAllTags(
     });
 
     return { tags };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getQuestionsByTag(
+  params: GetQuestionsByTagIdParams
+) {
+  const { tagId } = params;
+
+  try {
+    await connectToDatabase();
+
+    const tag = await Tag.findById({
+      _id: tagId
+    }).populate({
+      path: 'questions',
+      model: Question,
+      populate: [
+        {
+          path: 'tags',
+          model: Tag,
+          select: '_id name'
+        },
+        {
+          path: 'author',
+          model: User,
+          select: '_id clerkId name picture'
+        }
+      ]
+    });
+
+    if (tag) {
+      const questions = tag.questions;
+      return { tag };
+    }
+
+    return console.log('Tag Not Found');
   } catch (error) {
     console.log(error);
     throw error;

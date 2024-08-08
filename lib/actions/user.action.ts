@@ -9,6 +9,7 @@ import {
   DeleteUserParams,
   GetAllUsersParams,
   GetSavedQuestionsParams,
+  GetUserByIdParams,
   UpdateUserParams
 } from './shared.types';
 import { revalidatePath } from 'next/cache';
@@ -16,6 +17,7 @@ import Question from '@/database/question.model';
 
 import Tag from '@/database/tags.model';
 import { getQuestionById } from './question.action';
+import Answer from '@/database/answer.model';
 
 export async function getUserById(params: any) {
   try {

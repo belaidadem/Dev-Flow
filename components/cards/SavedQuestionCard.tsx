@@ -26,7 +26,7 @@ interface QuestionProps {
   saved: boolean;
   upvotes: Array<string>;
   views: number;
-  answers: Array<object>; // Added this to match QuestionCard
+  answers: Array<object>;
   createdAt: Date;
 }
 
@@ -49,17 +49,6 @@ const SavedQuestionCard = ({
       path: '/collection'
     });
   };
-
-  console.log(
-    _id,
-    title,
-    tags,
-    author,
-    saved,
-    upvotes,
-    views,
-    createdAt
-  );
 
   createdAt = new Date(createdAt);
 

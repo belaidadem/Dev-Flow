@@ -1,11 +1,20 @@
 'use client';
 
+import { viewQeustion } from '@/lib/actions/interaction.action';
 import { voteQuestion } from '@/lib/actions/question.action';
 import { saveQuestion } from '@/lib/actions/user.action';
 import { formatNumber } from '@/lib/utils';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import React, { useState } from 'react';
+import {
+  usePathname,
+  useRouter
+} from 'next/navigation';
+
+import React, {
+  useEffect,
+  useState,
+  useRef
+} from 'react';
 
 interface Props {
   type: string;
@@ -32,6 +41,8 @@ const Votes = ({
   const [isVoting, setIsVoting] = useState(false);
   const itemid = JSON.parse(itemId);
   const userid = JSON.parse(userId);
+  const router = useRouter();
+  const hasViewed = useRef(false); // Add a ref to track if the view has been recorded
 
   const handleSave = async () => {
     await saveQuestion({
@@ -56,6 +67,17 @@ const Votes = ({
     });
     setIsVoting(false);
   };
+
+  useEffect(() => {
+    if (!hasViewed.current) {
+      const questionId = itemId; // Extract the questionId from the router query
+      viewQeustion({
+        questionId: JSON.parse(questionId),
+        userId: userId ? JSON.parse(userId) : undefined
+      });
+      hasViewed.current = true; // Set the ref to true after the view is recorded
+    }
+  }, [itemId, userId, pathname, router]);
 
   return (
     <div className='flex gap-5'>
