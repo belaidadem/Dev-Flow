@@ -93,3 +93,28 @@ export async function getQuestionsByTag(
     throw error;
   }
 }
+
+export async function getHotTags() {
+  try {
+    await connectToDatabase();
+
+    const hotTags = await Tag.aggregate([
+      {
+        $addFields: {
+          questionsCount: { $size: '$questions' }
+        }
+      },
+      {
+        $sort: { questionsCount: -1 } // Sort by the number of questions in descending order
+      },
+      {
+        $limit: 5
+      }
+    ]);
+
+    return { hotTags };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

@@ -6,6 +6,8 @@ import {
   formatNumber,
   getTimestamp
 } from '@/lib/utils';
+import { SignedIn } from '@clerk/nextjs';
+import EditDeleteAction from '../shared/EditDeleteAction';
 
 interface QuestionProps {
   _id: string;
@@ -18,23 +20,28 @@ interface QuestionProps {
     _id: string;
     name: string;
     picture: string;
+    clerkId?: string | null;
   };
   upvotes: Array<string>;
   views: number;
   answers: Array<object>;
   createdAt: Date;
+  clerkId?: string | null;
 }
 
 const QuestionCard = ({
   _id,
   title,
   tags,
+  clerkId,
   author,
   upvotes,
   views,
   answers = [],
   createdAt
 }: QuestionProps) => {
+  const showActionButtons =
+    clerkId && clerkId === author.clerkId;
   tags = JSON.parse(JSON.stringify(tags));
   return (
     <div className='card-wrapper rounded-[10px] p-9 sm:px-11'>
@@ -49,6 +56,14 @@ const QuestionCard = ({
             </h3>
           </Link>
         </div>
+        <SignedIn>
+          {showActionButtons && (
+            <EditDeleteAction
+              type='Question'
+              itemId={JSON.stringify(_id)}
+            />
+          )}
+        </SignedIn>
       </div>
       <div className='mt-3.5 flex flex-wrap gap-2'>
         {tags.map((tag) => (

@@ -26,27 +26,37 @@ import { QuestionsSchema } from '@/lib/validations';
 import { useTheme } from '@/context/ThemeProvider';
 import { Badge } from '../ui/badge';
 import Image from 'next/image';
-import { createQuestion } from '@/lib/actions/question.action';
+import {
+  createQuestion,
+  editQuestion
+} from '@/lib/actions/question.action';
 import {
   useRouter,
   usePathname
 } from 'next/navigation';
-
-const type: any = 'create';
+import { IQuestion } from '@/database/question.model';
 
 interface Props {
   mongoUserId: string;
+  type?: string;
+  questionDetail?: IQuestion;
 }
 
-const Question = ({ mongoUserId }: Props) => {
+const Question = ({
+  mongoUserId,
+  type,
+  questionDetail
+}: Props) => {
   const editorRef = useRef<TinyMCEEditor | null>(null);
   const [key, setKey] = useState(0);
   const { mode } = useTheme();
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState(
+    questionDetail?.content ?? ''
+  );
   const [isSubmitting, setIsSubmitting] =
     useState(false);
   const router = useRouter();
-  const path = usePathname();
+  const pathname = usePathname();
 
   const handleInputKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -96,15 +106,22 @@ const Question = ({ mongoUserId }: Props) => {
     setKey((prevKey: number) => prevKey + 1);
   }, [mode]);
 
+  const groupTags = questionDetail?.tags?.map(
+    (tag: any) => tag.name
+  );
+
   // form functions
   const form = useForm<
     z.infer<typeof QuestionsSchema>
   >({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
-      title: '',
-      explanation: '',
-      tags: []
+      title: questionDetail?.title || '',
+      explanation: questionDetail?.content || '',
+      tags: groupTags || []
+      // title: '',
+      // explanation: '',
+      // tags: []
     }
   });
 
@@ -113,17 +130,27 @@ const Question = ({ mongoUserId }: Props) => {
   ) {
     setIsSubmitting(true);
     try {
-      // make a async call to API -> to create a question
-      await createQuestion({
-        title: values.title,
-        content: values.explanation,
-        tags: values.tags,
-        author: JSON.parse(mongoUserId),
-        path
-      });
-      // contain all form data
-      // navigate to home page
-      router.push('/');
+      if (type === 'Edit') {
+        await editQuestion({
+          questionId:
+            questionDetail?._id?.toString() ?? '',
+          title: values.title,
+          content: values.explanation,
+          path: pathname
+        });
+        router.push(
+          `/question/${questionDetail?._id}`
+        );
+      } else {
+        await createQuestion({
+          title: values.title,
+          content: values.explanation,
+          tags: values.tags,
+          author: JSON.parse(mongoUserId),
+          path: pathname
+        });
+        router.push('/');
+      }
     } catch (error) {
     } finally {
       setIsSubmitting(false);
@@ -179,9 +206,11 @@ const Question = ({ mongoUserId }: Props) => {
                     editorRef.current = editor;
                     editor.setContent(content);
                   }}
-                  initialValue=''
+                  initialValue={
+                    questionDetail?.content || ' '
+                  }
                   value={content}
-                  onBlur={field.onBlur}
+                  // onBlur={field.onBlur}
                   onEditorChange={(newContent) => {
                     setContent(newContent);
                     field.onChange(newContent);
@@ -246,7 +275,10 @@ const Question = ({ mongoUserId }: Props) => {
                     onKeyDown={(e) =>
                       handleInputKeyDown(e, field)
                     }
-                    disabled={field.value.length >= 3}
+                    disabled={
+                      field.value.length >= 3 ||
+                      type === 'Edit'
+                    }
                   />
                   {field.value.length > 0 && (
                     <div className='flex-start mt-2.5 gap-2.5'>
@@ -254,21 +286,25 @@ const Question = ({ mongoUserId }: Props) => {
                         <Badge
                           key={tag}
                           className='subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize'
-                          onClick={() => {
-                            handleTagRemove(
-                              tag,
-                              field
-                            );
-                          }}
+                          onClick={() =>
+                            type !== 'Edit'
+                              ? handleTagRemove(
+                                  tag,
+                                  field
+                                )
+                              : () => {}
+                          }
                         >
                           {tag}
-                          <Image
-                            src='/assets/icons/close.svg'
-                            alt='close icon'
-                            width={12}
-                            height={12}
-                            className='cursor-pointer object-contain invert-0 dark:invert'
-                          />
+                          {type !== 'Edit' && (
+                            <Image
+                              src='/assets/icons/close.svg'
+                              alt='close icon'
+                              width={12}
+                              height={12}
+                              className='cursor-pointer object-contain invert-0 dark:invert'
+                            />
+                          )}
                         </Badge>
                       ))}
                     </div>
@@ -291,13 +327,13 @@ const Question = ({ mongoUserId }: Props) => {
         >
           {isSubmitting ? (
             <>
-              {type === 'edit'
+              {type === 'Edit'
                 ? 'Editing...'
                 : 'Posting...'}
             </>
           ) : (
             <>
-              {type === 'edit'
+              {type === 'Edit'
                 ? 'Edit Question'
                 : 'Ask a Question'}
             </>

@@ -5,12 +5,15 @@ import { connectToDatabase } from '../mongoose';
 import Tag from '@/database/tags.model';
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams
 } from './shared.types';
 import User from '@/database/user.model';
 import { revalidatePath } from 'next/cache';
 import Answer from '@/database/answer.model';
+import Interaction from '@/database/interaction.model';
 
 export async function getQuestions(
   params: GetQuestionsParams
@@ -168,6 +171,80 @@ export async function voteQuestion({
     return JSON.stringify(result);
   } catch (error) {
     console.error('Error updating vote:', error);
+    throw error;
+  }
+}
+
+export async function deleteQuestion(
+  params: DeleteQuestionParams
+) {
+  try {
+    await connectToDatabase();
+
+    const { questionId, path } = params;
+
+    await Question.deleteOne({ _id: questionId });
+    await Answer.deleteMany({ question: questionId });
+    await Interaction.deleteMany({
+      question: questionId
+    });
+    await Tag.updateMany(
+      { questions: questionId },
+      { $pull: { questions: questionId } }
+    );
+
+    await Tag.deleteMany({ questions: { $size: 0 } });
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function editQuestion(
+  params: EditQuestionParams
+) {
+  try {
+    await connectToDatabase();
+
+    const { questionId, title, content, path } =
+      params;
+
+    const question =
+      await Question.findById(questionId).populate(
+        'tags'
+      );
+
+    if (!question) {
+      throw new Error('Question not found');
+    }
+
+    question.title = title;
+    question.content = content;
+
+    await question.save();
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getHotQuestion() {
+  try {
+    await connectToDatabase();
+
+    const hotQuestions = await Question.find({})
+      .sort({
+        views: -1
+      })
+      .limit(5);
+
+    return { hotQuestions };
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 }

@@ -21,8 +21,7 @@ export const getTimestamp = (
       (1000 * 60 * 60 * 24)
   );
   const hours = Math.floor(
-    (diff % (1000 * 60 * 60 * 24)) /
-      (1000 * 60 * 60)
+    (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
   );
   const minutes = Math.floor(
     (diff % (1000 * 60 * 60)) / (1000 * 60)
@@ -31,8 +30,7 @@ export const getTimestamp = (
   if (weeks > 0) return `${weeks} weeks ago`;
   if (days > 0) return `${days} days ago`;
   if (hours > 0) return `${hours} hours ago`;
-  if (minutes > 0)
-    return `${minutes} minutes ago`;
+  if (minutes > 0) return `${minutes} minutes ago`;
   return 'just now';
 };
 
@@ -49,3 +47,11 @@ export const formatNumber = (
     return number.toString();
   }
 };
+
+export function formatDate(date: Date): string {
+  const month = date.toLocaleString('default', {
+    month: 'long'
+  }); // Get full month name
+  const year = date.getFullYear(); // Get year
+  return `Joined ${month} ${year}`; // Join month and year
+}

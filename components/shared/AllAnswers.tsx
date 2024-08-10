@@ -78,6 +78,7 @@ const AllAnswers = async ({
                     hasupVoted={answer.upvotes.includes(
                       userId
                     )}
+                    hasSaved={false}
                     downvotes={answer.downvotes.length}
                     hasdownVoted={answer.downvotes.includes(
                       userId
