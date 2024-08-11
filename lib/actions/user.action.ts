@@ -81,7 +81,7 @@ export async function deleteUser(
 
     const { clerkId } = params;
 
-    const user = await User.findOne({ clerkId });
+    const user = await User.findById({ clerkId });
 
     console.log(user);
 
