@@ -2,15 +2,11 @@
 
 import { Button } from '@/components/ui/button';
 import { HomePageFilters } from '@/constants/filters';
-import {
-  formUrlQuery,
-  removeKeysFromQuery
-} from '@/lib/utils';
+import { formUrlQuery } from '@/lib/utils';
 import {
   useRouter,
   useSearchParams
 } from 'next/navigation';
-import router from 'next/router';
 import React, { useState } from 'react';
 
 const HomeFilters = () => {

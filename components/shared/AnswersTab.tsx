@@ -1,11 +1,6 @@
 import { getUserAnswers } from '@/lib/actions/user.action';
 import { SearchParamsProps } from '@/types';
 import React from 'react';
-import { getTimestamp } from '@/lib/utils';
-import ParseHTML from './ParseHTML';
-import Votes from './Votes';
-import Image from 'next/image';
-import Link from 'next/link';
 import AnswerCard from '../cards/AnswerCard';
 
 interface Props extends SearchParamsProps {
