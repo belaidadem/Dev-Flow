@@ -74,7 +74,6 @@ const Answer = ({
         editor.setContent('');
       }
     } catch (error) {
-      // console.log(question, authorId, questionId);
       console.log(error);
       throw error;
     } finally {

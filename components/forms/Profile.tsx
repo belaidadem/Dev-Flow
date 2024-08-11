@@ -71,9 +71,6 @@ const Profile = ({ clerkId, user }: Params) => {
     } finally {
       setIsSubmitting(false);
     }
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
   }
 
   return (
