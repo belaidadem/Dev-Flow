@@ -83,6 +83,8 @@ export async function deleteUser(
 
     const user = await User.findById({ clerkId });
 
+    console.log(user);
+
     // delete the questions
     // delete the answers ..commnets, etc.
 
