@@ -108,7 +108,10 @@ export async function POST(req: Request) {
       });
     }
 
-    return new Response('', { status: 201 });
+    return NextResponse.json({
+      message: 'OK',
+      eventType
+    });
   } catch (err) {
     console.error('Error processing webhook:', err);
     return new Response('Error occurred', {
