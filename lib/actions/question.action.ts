@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 'use server';
 
 import Question from '@/database/question.model';
@@ -14,6 +15,7 @@ import User from '@/database/user.model';
 import { revalidatePath } from 'next/cache';
 import Answer from '@/database/answer.model';
 import Interaction from '@/database/interaction.model';
+import { FilterQuery } from 'mongoose';
 
 export async function getQuestions(
   params: GetQuestionsParams
@@ -21,14 +23,54 @@ export async function getQuestions(
   try {
     await connectToDatabase();
 
-    const questions = await Question.find({})
+    const {
+      page = 1,
+      pageSize = 10,
+      searchQuery,
+      filter
+    } = params;
+
+    const query: FilterQuery<typeof Question> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        {
+          title: {
+            $regex: new RegExp(searchQuery, 'i')
+          }
+        },
+        {
+          content: {
+            $regex: new RegExp(searchQuery, 'i')
+          }
+        }
+      ];
+    }
+
+    let sortCriteria: Record<string, 1 | -1> = {};
+
+    switch (filter) {
+      case 'newest':
+        sortCriteria = { createdAt: -1 };
+        break;
+      case 'frequent':
+        sortCriteria = { views: -1 };
+        break;
+      case 'unanswered':
+        query.answers = { $size: 0 };
+        break;
+      default:
+        break;
+    }
+
+    const questions = await Question.find(query)
       .populate({ path: 'tags', model: Tag })
       .populate({ path: 'author', model: User })
-      .sort({ createdAt: -1 });
+      .sort(sortCriteria);
 
     return { questions };
   } catch (error) {
-    console.log(error);
+    console.log('Error:', error);
     throw error;
   }
 }

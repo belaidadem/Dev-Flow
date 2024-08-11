@@ -3,6 +3,7 @@
 
 import User from '@/database/user.model';
 import { connectToDatabase } from '../mongoose';
+import { FilterQuery, model } from 'mongoose';
 import {
   GetAllTagsParams,
   GetQuestionsByTagIdParams,
@@ -42,10 +43,23 @@ export async function getAllTags(
   try {
     await connectToDatabase();
 
-    // const { page = 1, pageSize = 20, filter, searchQuery } = params;
+    const {
+      page = 1,
+      pageSize = 20,
+      filter,
+      searchQuery
+    } = params;
 
-    const tags = await Tag.find({}).sort({
-      questions: 1
+    const query: FilterQuery<typeof Tag> = {};
+
+    if (searchQuery) {
+      query.name = {
+        $regex: new RegExp(searchQuery, 'i')
+      };
+    }
+
+    const tags = await Tag.find(query).sort({
+      questions: -1
     });
 
     return { tags };

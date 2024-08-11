@@ -7,14 +7,18 @@ import { auth } from '@clerk/nextjs/server';
 import { getSavedQuestions } from '@/lib/actions/user.action';
 import { redirect } from 'next/navigation';
 import SavedQuestionCard from '@/components/cards/SavedQuestionCard';
+import { SearchParamsProps } from '@/types';
 
-const Home = async () => {
+const Home = async ({
+  searchParams
+}: SearchParamsProps) => {
   const { userId } = auth();
 
   if (!userId) redirect('/sign-in');
 
   const data = await getSavedQuestions({
-    clerkId: userId
+    clerkId: userId,
+    searchQuery: searchParams.q
   });
 
   const result = JSON.parse(JSON.stringify(data));
@@ -29,7 +33,7 @@ const Home = async () => {
 
       <div className='mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center'>
         <LocalSearchBar
-          route='/'
+          route='/collection'
           iconPosition='left'
           imgSrc='/assets/icons/search.svg'
           placeholder='Search for questions...'

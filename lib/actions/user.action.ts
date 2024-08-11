@@ -124,7 +124,24 @@ export async function getAllUsers(
       searchQuery
     } = params;
 
-    const users = await User.find({}).sort({
+    const query: FilterQuery<typeof Question> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        {
+          name: {
+            $regex: new RegExp(searchQuery, 'i')
+          }
+        },
+        {
+          username: {
+            $regex: new RegExp(searchQuery, 'i')
+          }
+        }
+      ];
+    }
+
+    const users = await User.find(query).sort({
       createdAt: -1
     });
 
@@ -182,14 +199,22 @@ export async function getSavedQuestions(
       searchQuery
     } = params;
 
-    const query: FilterQuery<typeof Question> =
-      searchQuery
-        ? {
-            title: {
-              $regex: new RegExp(searchQuery, 'i')
-            }
+    const query: FilterQuery<typeof Question> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        {
+          title: {
+            $regex: new RegExp(searchQuery, 'i')
           }
-        : {};
+        },
+        {
+          content: {
+            $regex: new RegExp(searchQuery, 'i')
+          }
+        }
+      ];
+    }
 
     const user = await User.findOne({
       clerkId
