@@ -12,7 +12,7 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
-  console.log(req);
+  console.log(Request);
 
   if (!WEBHOOK_SECRET) {
     throw new Error(
