@@ -84,8 +84,6 @@ export async function deleteUser(
     // Use findOne to find the user by clerkId
     const user = await User.findOne({ clerkId });
 
-    console.log(JSON.parse(JSON.stringify(user)));
-
     if (!user) {
       throw new Error('User not found');
     }
