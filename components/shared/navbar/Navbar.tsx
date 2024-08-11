@@ -1,7 +1,4 @@
-import {
-  SignedIn,
-  UserButton
-} from '@clerk/nextjs';
+import { SignedIn, UserButton } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -44,6 +41,7 @@ const Navbar = () => {
             }}
           />
         </SignedIn>
+
         <MobileNav />
       </div>
     </nav>
