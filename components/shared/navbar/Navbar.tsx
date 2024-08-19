@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import Theme from './Theme';
-import MobileNav from './MobileNav';
 import GlobalSearch from '../search/GlobalSearch';
 
 const Navbar = () => {
@@ -30,6 +29,7 @@ const Navbar = () => {
       <div className='flex-between gap-5'>
         <Theme />
         <SignedIn>
+          {/* Mount the UserButton component */}
           <UserButton
             appearance={{
               elements: {
@@ -41,8 +41,6 @@ const Navbar = () => {
             }}
           />
         </SignedIn>
-
-        <MobileNav />
       </div>
     </nav>
   );

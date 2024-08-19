@@ -8,6 +8,7 @@ import { getSavedQuestions } from '@/lib/actions/user.action';
 import { redirect } from 'next/navigation';
 import SavedQuestionCard from '@/components/cards/SavedQuestionCard';
 import { SearchParamsProps } from '@/types';
+import Pagination from '@/components/shared/Pagination';
 
 const Home = async ({
   searchParams
@@ -18,7 +19,9 @@ const Home = async ({
 
   const data = await getSavedQuestions({
     clerkId: userId,
-    searchQuery: searchParams.q
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1
   });
 
   const result = JSON.parse(JSON.stringify(data));
@@ -71,6 +74,18 @@ const Home = async ({
           />
         )}
       </div>
+      {result.questions.length > 0 && (
+        <div className='mt-10'>
+          <Pagination
+            pageNumber={
+              searchParams?.page
+                ? +searchParams.page
+                : 1
+            }
+            isNext={result.isNext}
+          />
+        </div>
+      )}
     </>
   );
 };

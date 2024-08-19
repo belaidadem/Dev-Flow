@@ -2,6 +2,7 @@ import { getUserQuestions } from '@/lib/actions/user.action';
 import { SearchParamsProps } from '@/types';
 import React from 'react';
 import QuestionCard from '../cards/QuestionCard';
+import Pagination from './Pagination';
 
 interface Props extends SearchParamsProps {
   userId: string;
@@ -15,25 +16,40 @@ const QuestionsTab = async ({
 }: Props) => {
   const result = await getUserQuestions({
     userId,
-    page: 1
+    page: searchParams?.page ? +searchParams.page : 1
   });
   return (
-    <div className='flex flex-col gap-5'>
-      {result.questions.map((question) => (
-        <QuestionCard
-          key={question._id}
-          _id={question._id}
-          clerkId={clerkId}
-          title={question.title}
-          tags={question.tags}
-          author={question.author}
-          upvotes={question.upvotes}
-          views={question.views}
-          answers={question.answers}
-          createdAt={question.createdAt}
-        />
-      ))}
-    </div>
+    <>
+      <div className='mt-10 flex flex-col gap-5'>
+        {result.questions.map((question) => (
+          <QuestionCard
+            key={question._id}
+            _id={question._id}
+            clerkId={clerkId}
+            title={question.title}
+            tags={question.tags}
+            author={question.author}
+            upvotes={question.upvotes}
+            views={question.views}
+            answers={question.answers}
+            createdAt={question.createdAt}
+          />
+        ))}
+      </div>
+      {result.questions.length > 0 && (
+        <div className='mt-10'>
+          <Pagination
+            pageNumber={
+              searchParams?.page
+                ? +searchParams.page
+                : 1
+            }
+            isNext={result.isNext}
+            scroll={false}
+          />
+        </div>
+      )}
+    </>
   );
 };
 

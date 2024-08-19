@@ -18,10 +18,14 @@ import React from 'react';
 interface Params {
   params: {
     id: string;
+    searchParams: Object;
   };
 }
 
-const Page = async ({ params }: Params) => {
+const Page = async ({
+  params,
+  searchParams
+}: Params) => {
   const result = await getQuestionById({
     questionId: params.id
   });
@@ -118,6 +122,8 @@ const Page = async ({ params }: Params) => {
       <AllAnswers
         questionId={result._id}
         userId={mongoUser._id}
+        page={searchParams?.page}
+        filter={searchParams?.filter}
         totalAnswers={result.answers.length}
       />
 

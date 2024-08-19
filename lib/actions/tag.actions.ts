@@ -45,7 +45,7 @@ export async function getAllTags(
 
     const {
       page = 1,
-      pageSize = 20,
+      pageSize = 2,
       filter,
       searchQuery
     } = params;
@@ -58,11 +58,35 @@ export async function getAllTags(
       };
     }
 
-    const tags = await Tag.find(query).sort({
-      questions: -1
-    });
+    let sortOption = {};
 
-    return { tags };
+    switch (filter) {
+      case 'recent':
+        sortOption = { createdOn: -1 };
+        break;
+      case 'name':
+        sortOption = { name: 1 };
+        break;
+      case 'old':
+        sortOption = { createdOn: 1 };
+        break;
+
+      default:
+        sortOption = { questions: -1 };
+        break;
+    }
+
+    const skipAmount = (page - 1) * pageSize;
+
+    const totalTags = await Tag.countDocuments(query);
+    const isNext = totalTags > skipAmount + pageSize;
+
+    const tags = await Tag.find(query)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .sort(sortOption);
+
+    return { tags, isNext };
   } catch (error) {
     console.log(error);
     throw error;

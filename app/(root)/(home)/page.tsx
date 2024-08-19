@@ -9,11 +9,13 @@ import Link from 'next/link';
 import React from 'react';
 import { getQuestions } from '@/lib/actions/question.action';
 import { SearchParamsProps } from '@/types';
+import Pagination from '@/components/shared/Pagination';
 
 const Home = async ({
   searchParams
 }: SearchParamsProps) => {
   const result = await getQuestions({
+    page: searchParams?.page ? +searchParams.page : 1,
     searchQuery: searchParams.q,
     filter: searchParams.filter
   });
@@ -79,6 +81,19 @@ const Home = async ({
           />
         )}
       </div>
+
+      {result.questions.length > 0 && (
+        <div className='mt-10'>
+          <Pagination
+            pageNumber={
+              searchParams?.page
+                ? +searchParams.page
+                : 1
+            }
+            isNext={result.isNext}
+          />
+        </div>
+      )}
     </>
   );
 };

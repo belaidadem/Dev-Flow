@@ -1,5 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { getUserInfo } from '@/lib/actions/user.action';
+import {
+  getUserById,
+  getUserInfo
+} from '@/lib/actions/user.action';
 import { URLProps } from '@/types';
 import { SignedIn } from '@clerk/nextjs';
 import { auth } from '@clerk/nextjs/server';
@@ -17,11 +20,16 @@ import ProfileLink from '@/components/shared/ProfileLink';
 import Stats from '@/components/shared/Stats';
 import QuestionsTab from '@/components/shared/QuestionsTab';
 import AnswersTab from '@/components/shared/AnswersTab';
+import { redirect } from 'next/navigation';
 
 const Page = async ({
   params,
   searchParams
 }: URLProps) => {
+  const { userId } = auth();
+
+  if (!userId) redirect('/sign-in');
+
   const userInfo = await getUserInfo({
     userId: params.id
   });
