@@ -2,7 +2,8 @@ import LeftSidebar from '@/components/shared/LeftSidebar';
 import Navbar from '@/components/shared/navbar/Navbar';
 import RightSidebar from '@/components/shared/RightSidebar';
 import React from 'react';
-
+// eslint-disable-next-line no-unused-vars
+import { Toaster } from '@/components/ui/toaster';
 const Layout = ({
   children
 }: {
@@ -20,7 +21,7 @@ const Layout = ({
         </section>
         <RightSidebar />
       </div>
-      Toaster
+      <Toaster />
     </main>
   );
 };

@@ -1,8 +1,5 @@
 import { Button } from '@/components/ui/button';
-import {
-  getUserById,
-  getUserInfo
-} from '@/lib/actions/user.action';
+import { getUserInfo } from '@/lib/actions/user.action';
 import { URLProps } from '@/types';
 import { SignedIn } from '@clerk/nextjs';
 import { auth } from '@clerk/nextjs/server';
@@ -101,8 +98,10 @@ const Page = async ({
         </div>
       </div>
       <Stats
+        reputation={userInfo.reputation}
         totalQuestions={userInfo.totalQuestions}
         totalAnswers={userInfo.totalAnswers}
+        badges={userInfo.badgeCounts}
       />
       <div className='mt-10 flex gap-10'>
         <Tabs
@@ -123,7 +122,10 @@ const Page = async ({
               Answers
             </TabsTrigger>
           </TabsList>
-          <TabsContent value='top-posts'>
+          <TabsContent
+            value='top-posts'
+            className='mt-10 flex flex-col gap-6'
+          >
             <QuestionsTab
               searchParams={searchParams}
               userId={userInfo.user._id}

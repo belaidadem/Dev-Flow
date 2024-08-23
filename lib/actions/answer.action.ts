@@ -13,6 +13,7 @@ import Question from '@/database/question.model';
 import page from '@/app/(root)/(home)/page';
 import Interaction from '@/database/interaction.model';
 import Tag from '@/database/tags.model';
+import User from '@/database/user.model';
 
 export async function createAnswer(
   params: CreateAnswerParams
@@ -28,11 +29,22 @@ export async function createAnswer(
       question
     });
 
-    await Question.findByIdAndUpdate(question, {
-      $push: { answers: answer._id }
+    const questionObject =
+      await Question.findByIdAndUpdate(question, {
+        $push: { answers: answer._id }
+      });
+
+    await Interaction.create({
+      user: author,
+      action: 'answer',
+      question,
+      answer: answer._id,
+      tags: questionObject.tags
     });
 
-    // TODO: Add interaction...
+    await User.findByIdAndUpdate(author, {
+      $inc: { reputation: 10 }
+    });
 
     revalidatePath(path);
 

@@ -32,7 +32,9 @@ const ParseHTML = ({ data }: Props) => {
   }, []);
 
   return (
-    <div className='text-dark400_light700'>
+    <div
+      className={`text-dark400_light700 markdown w-full min-w-full`}
+    >
       {parse(data)}
     </div>
   );

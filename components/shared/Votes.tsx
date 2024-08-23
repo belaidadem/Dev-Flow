@@ -15,6 +15,7 @@ import React, {
   useState,
   useRef
 } from 'react';
+import { toast } from '../ui/use-toast';
 
 interface Props {
   type: string;
@@ -54,17 +55,54 @@ const Votes = ({
   };
 
   const handleVote = async (action: string) => {
-    if (!itemid || isVoting) return;
+    if (!userId)
+      return toast({
+        title: 'Please log in',
+        description:
+          'To save questions or upvote/downvote, please log in.'
+      });
     setIsVoting(true);
-    await voteQuestion({
-      type,
-      itemid,
-      userid,
-      action,
-      hasupVoted,
-      hasdownVoted,
-      path: pathname
-    });
+    const result: any = JSON.parse(
+      await voteQuestion({
+        type,
+        itemid,
+        userid,
+        action,
+        hasupVoted,
+        hasdownVoted,
+        path: pathname
+      })
+    );
+
+    if (result._id) {
+      toast({
+        title:
+          action === 'upvote'
+            ? hasupVoted
+              ? 'Upvote Removed'
+              : 'Upvoted!'
+            : hasdownVoted
+              ? 'Downvote removed'
+              : 'Downvoted!',
+        description:
+          action === 'upvote'
+            ? hasupVoted
+              ? 'Upvote removed successfully'
+              : 'You have successfully upvoted this ' +
+                `${type}.`
+            : hasdownVoted
+              ? 'Downvote removed successfully'
+              : 'You have successfully downvoted this ' +
+                `${type}.`
+      });
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description:
+          'An error occurred while trying to vote for this question.'
+      });
+    }
     setIsVoting(false);
   };
 

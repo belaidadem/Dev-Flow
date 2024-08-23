@@ -85,27 +85,29 @@ const QuestionCard = ({
           isAuthor
           textStyles='body-medium text-dark400_light700'
         />
-        <Metric
-          imgUrl='/assets/icons/like.svg'
-          alt='upvotes'
-          value={formatNumber(upvotes.length) || 0}
-          title=' Votes'
-          textStyles='small-medium text-dark400_light800'
-        />
-        <Metric
-          imgUrl='/assets/icons/message.svg'
-          alt='answers'
-          value={formatNumber(answers.length) || 0}
-          title=' Answers'
-          textStyles='small-medium text-dark400_light800'
-        />
-        <Metric
-          imgUrl='/assets/icons/eye.svg'
-          alt='eye'
-          value={formatNumber(views) || 0}
-          title=' Views'
-          textStyles='small-medium text-dark400_light800'
-        />
+        <div className='flex items-center gap-3 max-sm:flex-wrap'>
+          <Metric
+            imgUrl='/assets/icons/like.svg'
+            alt='upvotes'
+            value={formatNumber(upvotes.length) || 0}
+            title=' Votes'
+            textStyles='small-medium text-dark400_light800'
+          />
+          <Metric
+            imgUrl='/assets/icons/message.svg'
+            alt='answers'
+            value={formatNumber(answers.length) || 0}
+            title=' Answers'
+            textStyles='small-medium text-dark400_light800'
+          />
+          <Metric
+            imgUrl='/assets/icons/eye.svg'
+            alt='eye'
+            value={formatNumber(views) || 0}
+            title=' Views'
+            textStyles='small-medium text-dark400_light800'
+          />
+        </div>
       </div>
     </div>
   );

@@ -20,22 +20,20 @@ const QuestionsTab = async ({
   });
   return (
     <>
-      <div className='mt-10 flex flex-col gap-5'>
-        {result.questions.map((question) => (
-          <QuestionCard
-            key={question._id}
-            _id={question._id}
-            clerkId={clerkId}
-            title={question.title}
-            tags={question.tags}
-            author={question.author}
-            upvotes={question.upvotes}
-            views={question.views}
-            answers={question.answers}
-            createdAt={question.createdAt}
-          />
-        ))}
-      </div>
+      {result.questions.map((question) => (
+        <QuestionCard
+          key={question._id}
+          _id={question._id}
+          clerkId={clerkId}
+          title={question.title}
+          tags={question.tags}
+          author={question.author}
+          upvotes={question.upvotes}
+          views={question.views}
+          answers={question.answers}
+          createdAt={question.createdAt}
+        />
+      ))}
       {result.questions.length > 0 && (
         <div className='mt-10'>
           <Pagination

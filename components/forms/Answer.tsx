@@ -42,6 +42,8 @@ const Answer = ({
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] =
     useState(false);
+  const [isSubmittingAI, setIsSubmitingAI] =
+    useState(false);
 
   useEffect(() => {
     setKey((prevKey: number) => prevKey + 1);
@@ -81,6 +83,43 @@ const Answer = ({
     }
   };
 
+  const generateAIAnswer = async () => {
+    if (!authorId) return;
+
+    setIsSubmitingAI(true);
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ question })
+        }
+      );
+
+      const aiAnswer = await response.json();
+
+      // Convert AI answer to markdown format
+      const formattedAnswer = aiAnswer.replay.replace(
+        /\n/g,
+        '<br />'
+      );
+
+      if (editorRef?.current) {
+        const editor = editorRef.current as any;
+
+        editor.setContent(formattedAnswer);
+
+        // Toast ...
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    } finally {
+      setIsSubmitingAI(false);
+    }
+  };
+
   return (
     <div className='mt-9'>
       <div className='flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2'>
@@ -88,7 +127,10 @@ const Answer = ({
           Write Your Answer Here
         </h4>
 
-        <Button className='btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-sm'>
+        <Button
+          className='btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-sm'
+          onClick={generateAIAnswer}
+        >
           <Image
             src='/assets/icons/stars.svg'
             alt='star'
@@ -96,7 +138,9 @@ const Answer = ({
             height={12}
             className='object-contain'
           />
-          Generate an AI Answer
+          {isSubmittingAI
+            ? 'Generating...'
+            : 'Generate AI Answer'}
         </Button>
       </div>
       <Form {...form}>

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import Theme from './Theme';
 import GlobalSearch from '../search/GlobalSearch';
+import MobileNav from './MobileNav';
 
 const Navbar = () => {
   return (
@@ -41,6 +42,7 @@ const Navbar = () => {
             }}
           />
         </SignedIn>
+        <MobileNav />
       </div>
     </nav>
   );

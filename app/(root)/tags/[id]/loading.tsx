@@ -1,35 +1,18 @@
-import QuestionCard from '@/components/cards/QuestionCard';
-import Filter from '@/components/shared/Filter';
-import NoResult from '@/components/shared/NoResult';
-import LocalSearchBar from '@/components/shared/search/LocalSearchBar';
-import { QuestionFilters } from '@/constants/filters';
-import { getQuestionsByTag } from '@/lib/actions/tag.actions';
+import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react';
 
-interface Props {
-  params: {
-    id: string;
-  };
-}
-
-const Page = async ({ params }: Props) => {
-  // get all the tag from the parameter
-  const tagId = params.id;
-
-  let result;
-  result = await getQuestionsByTag({ tagId });
-  result = JSON.parse(JSON.stringify(result));
-
+const Loading = () => {
   return (
     <>
       <div className='flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center'>
-        <h1 className='h1-bold text-dark100_light900 capitalize'>
-          {result.tag.name}
+        <h1 className='h1-bold text-dark100_light900 uppercase'>
+          {/* {result.tag.name} */}
+          <Skeleton className='h-14 w-[200px] rounded-lg' />
         </h1>
       </div>
 
       <div className='mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center'>
-        <LocalSearchBar
+        {/* <LocalSearchBar
           route='/'
           iconPosition='left'
           imgSrc='/assets/icons/search.svg'
@@ -39,10 +22,13 @@ const Page = async ({ params }: Props) => {
         <Filter
           filters={QuestionFilters}
           otherClasses='min-h-[56px] sm:min-width-[170px]'
-        />
+        /> */}
+        <Skeleton className='h-14 w-full rounded-lg' />
+
+        <Skeleton className='h-14 w-[200px] rounded-lg' />
       </div>
       <div className='mt-10 flex w-full flex-col gap-6'>
-        {result.tag.questions.length > 0 ? (
+        {/* {result.tag.questions.length > 0 ? (
           result.tag.questions.map((question: any) => (
             <QuestionCard
               key={question._id}
@@ -63,10 +49,13 @@ const Page = async ({ params }: Props) => {
             link='/ask-question'
             linkTitle='Ask a Question'
           />
-        )}
+        )} */}
+        <Skeleton className='h-40 w-full rounded-lg' />
+        <Skeleton className='h-40 w-full rounded-lg' />
+        <Skeleton className='h-40 w-full rounded-lg' />
       </div>
     </>
   );
 };
 
-export default Page;
+export default Loading;

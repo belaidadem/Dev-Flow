@@ -7,6 +7,7 @@ import { getAllUsers } from '@/lib/actions/user.action';
 import { SearchParamsProps } from '@/types';
 import Link from 'next/link';
 import Pagination from '@/components/shared/Pagination';
+import Loading from './loading';
 
 const Page = async ({
   searchParams
@@ -16,6 +17,9 @@ const Page = async ({
     filter: searchParams.filter,
     page: searchParams?.page ? +searchParams.page : 1
   });
+
+  const loading = false;
+  if (loading) return <Loading />;
 
   return (
     <>

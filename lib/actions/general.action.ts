@@ -51,7 +51,7 @@ export async function globalSearch(
     let results: any = [];
 
     if (!type || !searchableTypes.includes(type)) {
-      // search acrocse every thing
+      // search acrose every thing
       for (const {
         model,
         searchField,

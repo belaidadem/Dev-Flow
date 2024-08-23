@@ -25,7 +25,7 @@ export async function getQuestions(
 
     const {
       page = 1,
-      pageSize = 2,
+      pageSize = 20,
       searchQuery,
       filter
     } = params;
@@ -126,7 +126,17 @@ export async function createQuestion(
 
     // Create an interaction record for the user's ask_question action
 
+    await Interaction.create({
+      user: author,
+      action: 'ask_question',
+      question: question._id,
+      tags: tagDocuments
+    });
+
     // Increment author's reputation
+    await User.findByIdAndUpdate(author, {
+      $inc: { reputation: 5 }
+    });
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -187,6 +197,12 @@ export async function voteQuestion({
 
     let update;
 
+    const item = await (
+      type === 'question' ? Question : Answer
+    )
+      .findById(itemid)
+      .populate('author');
+
     if (action === 'upvote') {
       if (hasupVoted) {
         update = { $pull: { upvotes: userid } };
@@ -195,7 +211,19 @@ export async function voteQuestion({
           $push: { upvotes: userid },
           $pull: { downvotes: userid } // Remove the downvote if it exists
         };
+        hasdownVoted ??
+          (await User.findByIdAndUpdate(item.author, {
+            $inc: { reputation: -10 }
+          }));
       }
+      //
+      await User.findByIdAndUpdate(userid, {
+        $inc: { reputation: hasupVoted ? -1 : 1 }
+      });
+
+      await User.findByIdAndUpdate(item.author, {
+        $inc: { reputation: hasupVoted ? -10 : 10 }
+      });
     } else if (action === 'downvote') {
       if (hasdownVoted) {
         update = { $pull: { downvotes: userid } };
@@ -204,7 +232,19 @@ export async function voteQuestion({
           $push: { downvotes: userid },
           $pull: { upvotes: userid } // Remove the upvote if it exists
         };
+        hasupVoted ??
+          (await User.findByIdAndUpdate(item.author, {
+            $inc: { reputation: -10 }
+          }));
       }
+
+      await User.findByIdAndUpdate(userid, {
+        $inc: { reputation: hasdownVoted ? -1 : 1 }
+      });
+
+      await User.findByIdAndUpdate(item.author, {
+        $inc: { reputation: hasdownVoted ? -10 : 10 }
+      });
     }
 
     const result = await (

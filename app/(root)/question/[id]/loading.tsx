@@ -1,49 +1,12 @@
-import Answer from '@/components/forms/Answer';
-import AllAnswers from '@/components/shared/AllAnswers';
-import Metric from '@/components/shared/Metric';
-import ParseHTML from '@/components/shared/ParseHTML';
-import RenderTag from '@/components/shared/RenderTag';
-import Votes from '@/components/shared/Votes';
-import { getQuestionById } from '@/lib/actions/question.action';
-import { getUserById } from '@/lib/actions/user.action';
-import {
-  formatNumber,
-  getTimestamp
-} from '@/lib/utils';
-import { SearchParamsProps } from '@/types';
-import { auth } from '@clerk/nextjs/server';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react';
 
-interface Params extends SearchParamsProps {
-  params: {
-    id: string;
-  };
-}
-
-const Page = async ({
-  params,
-  searchParams
-}: Params) => {
-  const result = await getQuestionById({
-    questionId: params.id
-  });
-
-  const questionId = params.id;
-  const { userId: clerkId } = auth();
-
-  let mongoUser;
-
-  if (clerkId) {
-    mongoUser = await getUserById({ userId: clerkId });
-  }
-
+const Loading = () => {
   return (
     <>
       <div className='flex-start w-full flex-col'>
         <div className='flex w-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2'>
-          <Link
+          {/* <Link
             href={`/profile/${result.author.clerkId}`}
             className='flex items-center justify-start gap-1'
           >
@@ -57,9 +20,13 @@ const Page = async ({
             <p className='paragraph-semibold text-dark300_light700'>
               {result.author.name}
             </p>
-          </Link>
+          </Link> */}
+          <div className='flex items-center justify-start gap-4'>
+            <Skeleton className='size-14 rounded-full' />
+            <Skeleton className='h-14 w-36 rounded-lg' />
+          </div>
           <div className='flex justify-end'>
-            <Votes
+            {/* <Votes
               type='question'
               itemId={JSON.stringify(result._id)}
               userId={JSON.stringify(mongoUser._id)}
@@ -74,16 +41,18 @@ const Page = async ({
               hasSaved={mongoUser?.saved.includes(
                 result._id
               )}
-            />
+            /> */}
+            <Skeleton className='h-14 w-36 rounded-lg' />
           </div>
         </div>
         <h2 className='h2-semibold text-dark200_light900 mt-3.5 w-full text-left'>
-          {result.title}
+          {/* {result.title} */}
+          <Skeleton className='h-14 w-full rounded-lg' />
         </h2>
       </div>
 
       <div className='mb-8 mt-5 flex flex-wrap gap-4'>
-        <Metric
+        {/* <Metric
           imgUrl='/assets/icons/clock.svg'
           alt='clock icon'
           value={` Asked ${getTimestamp(result.createdAt)}`}
@@ -105,21 +74,27 @@ const Page = async ({
           value={formatNumber(result.views) || 0}
           title=' Views'
           textStyles='small-medium text-dark400_light800'
-        />
+        /> */}
+        <Skeleton className='h-14 w-32 rounded-lg' />
+        <Skeleton className='h-14 w-32 rounded-lg' />
+        <Skeleton className='h-14 w-32 rounded-lg' />
       </div>
-      <ParseHTML data={result.content} />
+      {/* <ParseHTML data={result.content} /> */}
+      <Skeleton className='h-96 w-full rounded-lg' />
 
       <div className='mt-8 flex flex-wrap gap-2'>
-        {result.tags.map((tag: any) => (
+        {/* {result.tags.map((tag: any) => (
           <RenderTag
             key={tag._id}
             _id={tag._id}
             name={tag.name}
           />
-        ))}
+        ))} */}
+        <Skeleton className='h-14 w-32 rounded-lg' />
+        <Skeleton className='h-14 w-32 rounded-lg' />
       </div>
 
-      <AllAnswers
+      {/* <AllAnswers
         questionId={result._id}
         userId={mongoUser._id}
         page={
@@ -127,15 +102,15 @@ const Page = async ({
         }
         filter={searchParams?.filter}
         totalAnswers={result.answers.length}
-      />
+      /> */}
 
-      <Answer
+      {/* <Answer
         question={result.content}
         questionId={JSON.stringify(questionId)}
         authorId={JSON.stringify(mongoUser._id)}
-      />
+      /> */}
     </>
   );
 };
 
-export default Page;
+export default Loading;
