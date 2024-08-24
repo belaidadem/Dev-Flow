@@ -67,24 +67,34 @@ const Page = async ({
             </p>
           </Link>
           <div className='flex justify-end'>
-            <SignedIn>
-              <Votes
-                type='question'
-                itemId={result._id}
-                userId={mongoUser?._id}
-                upvotes={result.upvotes.length}
-                hasupVoted={result.upvotes.includes(
-                  mongoUser?._id
-                )}
-                downvotes={result.downvotes?.length}
-                hasdownVoted={result.downvotes?.includes(
-                  mongoUser?._id
-                )}
-                hasSaved={mongoUser?.saved.includes(
-                  result._id
-                )}
-              />
-            </SignedIn>
+            <Votes
+              type='question'
+              itemId={result._id}
+              userId={mongoUser?._id}
+              upvotes={result.upvotes.length}
+              hasupVoted={
+                mongoUser?._id
+                  ? result.upvotes.includes(
+                      mongoUser?._id
+                    )
+                  : false
+              }
+              downvotes={result.downvotes?.length}
+              hasdownVoted={
+                mongoUser?._id
+                  ? result.downvotes?.includes(
+                      mongoUser?._id
+                    )
+                  : false
+              }
+              hasSaved={
+                mongoUser?._id
+                  ? mongoUser?.saved.includes(
+                      result._id
+                    )
+                  : false
+              }
+            />
           </div>
         </div>
         <h2 className='h2-semibold text-dark200_light900 mt-3.5 w-full text-left'>
