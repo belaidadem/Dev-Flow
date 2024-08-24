@@ -16,6 +16,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { Metadata } from 'next';
+import { SignedIn, SignIn } from '@clerk/nextjs';
 
 export const metadata: Metadata = {
   title: 'Question | Dev Overflow',
@@ -128,7 +129,7 @@ const Page = async ({
 
       <AllAnswers
         questionId={result._id}
-        userId={mongoUser._id}
+        userId={mongoUser?._id}
         page={
           searchParams?.page ? +searchParams.page : 1
         }
@@ -136,11 +137,13 @@ const Page = async ({
         totalAnswers={result.answers.length}
       />
 
-      <Answer
-        question={result.content}
-        questionId={JSON.stringify(questionId)}
-        authorId={JSON.stringify(mongoUser._id)}
-      />
+      <SignedIn>
+        <Answer
+          question={result.content}
+          questionId={JSON.stringify(questionId)}
+          authorId={JSON.stringify(mongoUser?._id)}
+        />
+      </SignedIn>
     </>
   );
 };
