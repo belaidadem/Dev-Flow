@@ -16,7 +16,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { Metadata } from 'next';
-import { SignedIn, SignIn } from '@clerk/nextjs';
+import { SignedIn } from '@clerk/nextjs';
 
 export const metadata: Metadata = {
   title: 'Question | Dev Overflow',
