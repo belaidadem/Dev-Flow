@@ -12,7 +12,6 @@ import {
   useAuth
 } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
-import { getUserById } from '@/lib/actions/user.action';
 
 const LeftSidebar = () => {
   const { userId } = useAuth();
