@@ -40,8 +40,8 @@ const Votes = ({
 }: Props) => {
   const pathname = usePathname();
   const [isVoting, setIsVoting] = useState(false);
-  const itemid = JSON.parse(itemId);
-  const userid = JSON.parse(userId);
+  const itemid = itemId;
+  const userid = userId;
   const router = useRouter();
   const hasViewed = useRef(false); // Add a ref to track if the view has been recorded
 
