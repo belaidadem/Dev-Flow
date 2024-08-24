@@ -81,7 +81,7 @@ const AnswersTab = async ({
         </article>
       ))}
 
-      {result.answers.length > 0 ? (
+      {result.isNext ? (
         <div className='mt-10'>
           <Pagination
             pageNumber={

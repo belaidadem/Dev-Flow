@@ -34,7 +34,7 @@ const QuestionsTab = async ({
           createdAt={question.createdAt}
         />
       ))}
-      {result.questions.length > 0 && (
+      {result.isNext && (
         <div className='mt-10'>
           <Pagination
             pageNumber={
