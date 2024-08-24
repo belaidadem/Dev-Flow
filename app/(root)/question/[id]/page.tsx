@@ -34,7 +34,7 @@ const Page = async ({
   params,
   searchParams
 }: Params) => {
-  const result = await getQuestionById({
+  const { question: result } = await getQuestionById({
     questionId: params.id
   });
 
@@ -69,7 +69,9 @@ const Page = async ({
           <div className='flex justify-end'>
             <Votes
               type='question'
-              itemId={result._id}
+              itemId={JSON.parse(
+                JSON.stringify(questionId)
+              )}
               userId={mongoUser?._id}
               upvotes={result.upvotes.length}
               hasupVoted={
@@ -95,6 +97,23 @@ const Page = async ({
                   : false
               }
             />
+            {/* 
+            <Votes
+                    type='answer'
+                    itemId={JSON.stringify(answer._id)}
+                    userId={JSON.stringify(userId)}
+                    upvotes={answer.upvotes.length}
+                    hasupVoted={answer.upvotes.includes(
+                      userId
+                    )}
+                    hasSaved={false}
+                    downvotes={answer.downvotes.length}
+                    hasdownVoted={answer.downvotes.includes(
+                      userId
+                    )}
+                  />
+            
+            */}
           </div>
         </div>
         <h2 className='h2-semibold text-dark200_light900 mt-3.5 w-full text-left'>

@@ -46,6 +46,13 @@ const Votes = ({
   const hasViewed = useRef(false); // Add a ref to track if the view has been recorded
 
   const handleSave = async () => {
+    if (!userId)
+      return toast({
+        title: 'Please log in',
+        description:
+          'To save questions or upvote/downvote, please log in.'
+      });
+    setIsVoting(true);
     await saveQuestion({
       itemid,
       userid,
@@ -107,11 +114,12 @@ const Votes = ({
   };
 
   useEffect(() => {
+    if (!userId) return;
     if (!hasViewed.current) {
       const questionId = itemId; // Extract the questionId from the router query
       viewQeustion({
-        questionId: JSON.parse(questionId),
-        userId: userId ? JSON.parse(userId) : undefined
+        questionId,
+        userId: userId || undefined
       });
       hasViewed.current = true; // Set the ref to true after the view is recorded
     }

@@ -168,7 +168,7 @@ export async function getQuestionById(
         select: '_id name'
       });
 
-    return question;
+    return { question };
   } catch (error) {
     console.log(error);
     throw error;
