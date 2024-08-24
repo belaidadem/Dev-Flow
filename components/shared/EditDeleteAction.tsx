@@ -8,6 +8,19 @@ import {
 } from 'next/navigation';
 import React from 'react';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog';
+import { toast } from '../ui/use-toast';
+
 interface Props {
   type: string;
   itemId: string;
@@ -24,10 +37,24 @@ const EditDeleteAction = ({ type, itemId }: Props) => {
 
   const handleDelete = async () => {
     if (type === 'Question') {
-      await deleteQuestion({
+      const result = await deleteQuestion({
         questionId: JSON.parse(itemId),
         path: pathname
       });
+
+      if (!result?.response) {
+        toast({
+          title: 'Deleted successfully',
+          description: 'Question deleted successfully'
+        });
+      } else {
+        toast({
+          title: 'Failed to delete',
+          description:
+            'Failed to delete the question. Please try again.',
+          variant: 'destructive'
+        });
+      }
     } else if (type === 'Answer') {
       await deleteAnswer({
         answerId: JSON.parse(itemId),
@@ -48,14 +75,39 @@ const EditDeleteAction = ({ type, itemId }: Props) => {
         />
       )}
 
-      <Image
-        src='/assets/icons/trash.svg'
-        alt='Delete'
-        width={14}
-        height={14}
-        className='cursor-pointer object-contain'
-        onClick={handleDelete}
-      />
+      <AlertDialog>
+        <AlertDialogTrigger>
+          <Image
+            src='/assets/icons/trash.svg'
+            alt='Delete'
+            width={14}
+            height={14}
+            className='cursor-pointer object-contain'
+          />
+        </AlertDialogTrigger>
+        <AlertDialogContent className='border-gray-800 bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-300'>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you absolutely sure?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will
+              permanently delete your question.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className='bg-red-500 text-white dark:bg-red-700'
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

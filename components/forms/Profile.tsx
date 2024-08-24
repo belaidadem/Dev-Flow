@@ -23,6 +23,7 @@ import {
 } from 'next/navigation';
 import { updateUser } from '@/lib/actions/user.action';
 import { IUser } from '@/database/user.model';
+import { toast } from '../ui/use-toast';
 
 interface Params {
   clerkId: string;
@@ -53,7 +54,7 @@ const Profile = ({ clerkId, user }: Params) => {
 
     try {
       // update user profile
-      await updateUser({
+      const result = await updateUser({
         clerkId,
         updateData: {
           name: values.name,
@@ -64,6 +65,21 @@ const Profile = ({ clerkId, user }: Params) => {
         },
         path: pathname
       });
+
+      if (result?.user) {
+        toast({
+          title: 'Updated successfully',
+          description:
+            'Your profile has been updated successfully'
+        });
+      } else {
+        toast({
+          title: 'Error occurred',
+          description:
+            'An error occurred while updating your profile',
+          variant: 'destructive'
+        });
+      }
 
       router.back();
     } catch (error) {
@@ -97,7 +113,7 @@ const Profile = ({ clerkId, user }: Params) => {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -119,7 +135,7 @@ const Profile = ({ clerkId, user }: Params) => {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -137,7 +153,7 @@ const Profile = ({ clerkId, user }: Params) => {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -155,7 +171,7 @@ const Profile = ({ clerkId, user }: Params) => {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -173,7 +189,7 @@ const Profile = ({ clerkId, user }: Params) => {
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className='text-red-500' />
             </FormItem>
           )}
         />
@@ -184,7 +200,7 @@ const Profile = ({ clerkId, user }: Params) => {
             className='primary-gradient w-fit text-white'
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Submitting...' : 'Save'}
+            {isSubmitting ? 'Updating' : 'Update'}
           </Button>
         </div>
       </form>

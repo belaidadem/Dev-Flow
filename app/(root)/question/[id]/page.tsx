@@ -15,6 +15,13 @@ import { auth } from '@clerk/nextjs/server';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Question | Dev Overflow',
+  description:
+    'View and answer questions, learn from others, and vote on the best answers.'
+};
 
 interface Params extends SearchParamsProps {
   params: {

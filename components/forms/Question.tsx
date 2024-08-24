@@ -35,6 +35,7 @@ import {
   usePathname
 } from 'next/navigation';
 import { IQuestion } from '@/database/question.model';
+import { toast } from '../ui/use-toast';
 
 interface Props {
   mongoUserId: string;
@@ -119,9 +120,6 @@ const Question = ({
       title: questionDetail?.title || '',
       explanation: questionDetail?.content || '',
       tags: groupTags || []
-      // title: '',
-      // explanation: '',
-      // tags: []
     }
   });
 
@@ -142,16 +140,37 @@ const Question = ({
           `/question/${questionDetail?._id}`
         );
       } else {
-        await createQuestion({
+        const result = await createQuestion({
           title: values.title,
           content: values.explanation,
           tags: values.tags,
           author: JSON.parse(mongoUserId),
           path: pathname
         });
+
+        if (result?.question) {
+          toast({
+            title: 'Question created successfully',
+            description:
+              'Your question has been created successfully'
+          });
+        } else {
+          toast({
+            title: 'Error creating question',
+            description:
+              'An error occurred while creating your question. Please try again later.',
+            variant: 'destructive'
+          });
+        }
         router.push('/');
       }
     } catch (error) {
+      toast({
+        title: 'Error creating question',
+        description:
+          'An error occurred while creating your question. Please try again later.',
+        variant: 'destructive'
+      });
     } finally {
       setIsSubmitting(false);
     }

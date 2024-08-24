@@ -66,7 +66,7 @@ export async function updateUser(
 
     const { clerkId, updateData, path } = params;
 
-    await User.findOneAndUpdate(
+    const user = await User.findOneAndUpdate(
       { clerkId },
       updateData,
       {
@@ -75,6 +75,8 @@ export async function updateUser(
     );
 
     revalidatePath(path);
+
+    return { user };
   } catch (error) {}
 }
 

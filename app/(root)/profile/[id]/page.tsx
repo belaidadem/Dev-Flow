@@ -18,6 +18,13 @@ import Stats from '@/components/shared/Stats';
 import QuestionsTab from '@/components/shared/QuestionsTab';
 import AnswersTab from '@/components/shared/AnswersTab';
 import { redirect } from 'next/navigation';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Profile | Dev Overflow',
+  description:
+    'View your profile, follow others, and manage your activity.'
+};
 
 const Page = async ({
   params,

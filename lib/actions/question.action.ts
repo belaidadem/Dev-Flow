@@ -138,6 +138,8 @@ export async function createQuestion(
       $inc: { reputation: 5 }
     });
     revalidatePath(path);
+
+    return { question };
   } catch (error) {
     console.log(error);
     throw error;
@@ -202,6 +204,7 @@ export async function voteQuestion({
     )
       .findById(itemid)
       .populate('author');
+    const { author } = item;
 
     if (action === 'upvote') {
       if (hasupVoted) {
@@ -209,42 +212,18 @@ export async function voteQuestion({
       } else {
         update = {
           $push: { upvotes: userid },
-          $pull: { downvotes: userid } // Remove the downvote if it exists
+          $pull: { downvotes: userid }
         };
-        hasdownVoted ??
-          (await User.findByIdAndUpdate(item.author, {
-            $inc: { reputation: -10 }
-          }));
       }
-      //
-      await User.findByIdAndUpdate(userid, {
-        $inc: { reputation: hasupVoted ? -1 : 1 }
-      });
-
-      await User.findByIdAndUpdate(item.author, {
-        $inc: { reputation: hasupVoted ? -10 : 10 }
-      });
     } else if (action === 'downvote') {
       if (hasdownVoted) {
         update = { $pull: { downvotes: userid } };
       } else {
         update = {
           $push: { downvotes: userid },
-          $pull: { upvotes: userid } // Remove the upvote if it exists
+          $pull: { upvotes: userid }
         };
-        hasupVoted ??
-          (await User.findByIdAndUpdate(item.author, {
-            $inc: { reputation: -10 }
-          }));
       }
-
-      await User.findByIdAndUpdate(userid, {
-        $inc: { reputation: hasdownVoted ? -1 : 1 }
-      });
-
-      await User.findByIdAndUpdate(item.author, {
-        $inc: { reputation: hasdownVoted ? -10 : 10 }
-      });
     }
 
     const result = await (
@@ -253,12 +232,33 @@ export async function voteQuestion({
       new: true
     });
 
+    // ! Adding the reputation
+
+    await User.findByIdAndUpdate(userid, {
+      $inc: {
+        reputation:
+          result.upvotes.includes(author._id) ||
+          result.downvotes.includes(author._id)
+            ? 1
+            : -1
+      }
+    });
+
+    await User.findByIdAndUpdate(item.author, {
+      $inc: {
+        reputation:
+          action === 'upvote' &&
+          !item.upvotes.includes(author._id)
+            ? 10
+            : -10
+      }
+    });
+
     if (!result) {
       console.error('Question not found');
       throw new Error('Question not found');
     }
 
-    // revalidatePath(path);
     revalidatePath(path);
 
     return JSON.stringify(result);
@@ -276,7 +276,9 @@ export async function deleteQuestion(
 
     const { questionId, path } = params;
 
-    await Question.deleteOne({ _id: questionId });
+    const { deletedCount } = await Question.deleteOne({
+      _id: questionId
+    });
     await Answer.deleteMany({ question: questionId });
     await Interaction.deleteMany({
       question: questionId
@@ -289,6 +291,13 @@ export async function deleteQuestion(
     await Tag.deleteMany({ questions: { $size: 0 } });
 
     revalidatePath(path);
+
+    let response;
+
+    if (deletedCount === 1) response = true;
+    else response = false;
+
+    return { response };
   } catch (error) {
     console.log(error);
     throw error;

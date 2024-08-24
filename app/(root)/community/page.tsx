@@ -8,6 +8,13 @@ import { SearchParamsProps } from '@/types';
 import Link from 'next/link';
 import Pagination from '@/components/shared/Pagination';
 import Loading from './loading';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Community | Dev Overflow',
+  description:
+    'Discover and connect with other developers. Join the conversation and learn from others!'
+};
 
 const Page = async ({
   searchParams

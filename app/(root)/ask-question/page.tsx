@@ -5,6 +5,13 @@ import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
 import React from 'react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Ask Question | Dev Overflow',
+  description:
+    'Create a new question and share your knowledge with the community. Join the conversation and learn from others!'
+};
 
 const Page = async () => {
   const { userId } = auth();

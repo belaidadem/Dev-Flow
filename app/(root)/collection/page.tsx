@@ -9,6 +9,13 @@ import { redirect } from 'next/navigation';
 import SavedQuestionCard from '@/components/cards/SavedQuestionCard';
 import { SearchParamsProps } from '@/types';
 import Pagination from '@/components/shared/Pagination';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Collection | Dev Overflow',
+  description:
+    'Check out your saved questions on Dev Overflow. Filter and search through your saved questions to find the perfect'
+};
 
 const Home = async ({
   searchParams

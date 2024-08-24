@@ -7,6 +7,13 @@ import { TagFilters } from '@/constants/filters';
 import { getAllTags } from '@/lib/actions/tag.actions';
 import { SearchParamsProps } from '@/types';
 import React from 'react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Tags | Dev Overflow',
+  description:
+    'Discover and learn from the most popular programming languages and topics on Dev Overflow. Filter and search through.'
+};
 
 const Page = async ({
   searchParams
