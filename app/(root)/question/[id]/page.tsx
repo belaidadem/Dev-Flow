@@ -69,14 +69,14 @@ const Page = async ({
             <Votes
               type='question'
               itemId={JSON.stringify(result._id)}
-              userId={JSON.stringify(mongoUser._id)}
+              userId={JSON.stringify(mongoUser?._id)}
               upvotes={result.upvotes.length}
               hasupVoted={result.upvotes.includes(
-                mongoUser._id
+                mongoUser?._id
               )}
               downvotes={result.downvotes?.length}
               hasdownVoted={result.downvotes?.includes(
-                mongoUser._id
+                mongoUser?._id
               )}
               hasSaved={mongoUser?.saved.includes(
                 result._id
