@@ -1,10 +1,6 @@
 'use client';
 
-import React, {
-  useEffect,
-  useRef,
-  useState
-} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Form,
   FormControl,
@@ -30,20 +26,14 @@ interface Params {
   questionId: string;
 }
 
-const Answer = ({
-  question,
-  questionId,
-  authorId
-}: Params) => {
+const Answer = ({ question, questionId, authorId }: Params) => {
   const pathname = usePathname();
   const editorRef = useRef<TinyMCEEditor | null>(null);
   const [key, setKey] = useState(0);
   const { mode } = useTheme();
   const [content, setContent] = useState('');
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
-  const [isSubmittingAI, setIsSubmitingAI] =
-    useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmittingAI, setIsSubmitingAI] = useState(false);
 
   useEffect(() => {
     setKey((prevKey: number) => prevKey + 1);
@@ -56,9 +46,7 @@ const Answer = ({
     }
   });
 
-  const handleCreateAnswer = async (
-    values: z.infer<typeof AnswerSchema>
-  ) => {
+  const handleCreateAnswer = async (values: z.infer<typeof AnswerSchema>) => {
     setIsSubmitting(true);
     try {
       await createAnswer({
@@ -100,15 +88,14 @@ const Answer = ({
       const aiAnswer = await response.json();
 
       // Convert AI answer to markdown format
-      const formattedAnswer = aiAnswer.replay.replace(
-        /\n/g,
-        '<br />'
-      );
+      const formattedAnswer = aiAnswer.replay.replace(/\n/g, '<br />');
 
       if (editorRef?.current) {
         const editor = editorRef.current as any;
 
         editor.setContent(formattedAnswer);
+
+        console.log(formattedAnswer);
 
         // Toast ...
       }
@@ -138,17 +125,13 @@ const Answer = ({
             height={12}
             className='object-contain'
           />
-          {isSubmittingAI
-            ? 'Generating...'
-            : 'Generate AI Answer'}
+          {isSubmittingAI ? 'Generating...' : 'Generate AI Answer'}
         </Button>
       </div>
       <Form {...form}>
         <form
           className='mt-6 flex w-full flex-col gap-10'
-          onSubmit={form.handleSubmit(
-            handleCreateAnswer
-          )}
+          onSubmit={form.handleSubmit(handleCreateAnswer)}
         >
           <FormField
             control={form.control}
@@ -158,10 +141,7 @@ const Answer = ({
                 <FormControl className='background-light900_dark300 mt-3.5'>
                   <Editor
                     key={key}
-                    apiKey={
-                      process.env
-                        .NEXT_PUBLIC_TINY_EDITOR_API_KEY
-                    }
+                    apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                     onInit={(_evt, editor) => {
                       editorRef.current = editor;
                       editor.setContent(content);
@@ -196,14 +176,8 @@ const Answer = ({
                       toolbar:
                         'undo redo | codesample | bold italic forecolor | alignleft aligncenter ' +
                         'alignright alignjustify | bullist numlist outdent indent |',
-                      skin:
-                        mode === 'dark'
-                          ? 'oxide-dark'
-                          : 'oxide',
-                      content_css:
-                        mode === 'dark'
-                          ? 'dark'
-                          : 'default'
+                      skin: mode === 'dark' ? 'oxide-dark' : 'oxide',
+                      content_css: mode === 'dark' ? 'dark' : 'default'
                     }}
                   />
                 </FormControl>
@@ -219,9 +193,7 @@ const Answer = ({
               className='primary-gradient w-fit text-white shadow-sm'
               disabled={isSubmitting}
             >
-              {isSubmitting
-                ? 'Submitting...'
-                : 'Submit Answer'}
+              {isSubmitting ? 'Submitting...' : 'Submit Answer'}
             </Button>
           </div>
         </form>
