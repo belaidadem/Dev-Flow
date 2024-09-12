@@ -1,13 +1,10 @@
-import {
-  SignedIn,
-  UserButton
-} from '@clerk/nextjs';
+import { SignedIn, UserButton } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import Theme from './Theme';
-import MobileNav from './MobileNav';
 import GlobalSearch from '../search/GlobalSearch';
+import MobileNav from './MobileNav';
 
 const Navbar = () => {
   return (
@@ -33,6 +30,7 @@ const Navbar = () => {
       <div className='flex-between gap-5'>
         <Theme />
         <SignedIn>
+          {/* Mount the UserButton component */}
           <UserButton
             appearance={{
               elements: {

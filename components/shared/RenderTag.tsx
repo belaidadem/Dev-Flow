@@ -4,17 +4,17 @@ import Link from 'next/link';
 import React from 'react';
 
 interface Props {
-  _id: number;
+  _id: string;
   name: string;
-  totalQuestions: number;
-  showCount: boolean;
+  totalQuestions?: number;
+  showCount?: boolean;
 }
 
 const RenderTag = ({
   _id,
   name,
   totalQuestions,
-  showCount
+  showCount = false
 }: Props) => {
   return (
     <Link

@@ -10,24 +10,26 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setMode] = useState('light');
-
-  const handleThemeChange = () => {
-    if (
-      localStorage.theme === 'dark' ||
-      (!('theme' in localStorage) &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      setMode('dark');
-      document.documentElement.classList.add('dark');
-    } else {
-      setMode('light');
-      document.documentElement.classList.remove('dark');
+  // Define a function to get the initial theme safely in the browser
+  const getInitialTheme = () => {
+    // Check if window and localStorage are available
+    if (typeof window !== 'undefined' && localStorage) {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches;
+      return savedTheme || (prefersDark ? 'dark' : 'light');
     }
+    return 'light'; // Default to 'light' theme during SSR or if localStorage is not available
   };
 
+  const [mode, setMode] = useState<string>(getInitialTheme);
+
   useEffect(() => {
-    handleThemeChange();
+    if (typeof window !== 'undefined') {
+      document.documentElement.classList.toggle('dark', mode === 'dark');
+      localStorage.setItem('theme', mode);
+    }
   }, [mode]);
 
   return (

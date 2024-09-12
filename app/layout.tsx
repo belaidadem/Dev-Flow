@@ -1,25 +1,19 @@
 /* eslint-disable camelcase */
 import { ClerkProvider } from '@clerk/nextjs';
 import { Inter, Space_Grotesk } from 'next/font/google';
+/* eslint-disable camelcase */
+import { ClerkProvider } from '@clerk/nextjs';
+
 import type { Metadata } from 'next';
 
 import './globals.css';
+import '../styles/prism.css';
 import React from 'react';
 import { ThemeProvider } from '@/context/ThemeProvider';
 
 const inter = Inter({
   subsets: ['latin'],
-  weight: [
-    '100',
-    '200',
-    '300',
-    '400',
-    '500',
-    '600',
-    '700',
-    '800',
-    '900'
-  ],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
   variable: '--font-inter'
 });
 
@@ -47,15 +41,12 @@ export default function RootLayout({
       appearance={{
         elements: {
           formButtonPrimary: 'primary-gradient',
-          footerActionLink:
-            'primary-text-gradient hover:text-primary-500'
+          footerActionLink: 'primary-text-gradient hover:text-primary-500'
         }
       }}
     >
       <html lang='en'>
-        <body
-          className={`${inter.variable} ${spaceGrotesk.variable}`}
-        >
+        <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
           <ThemeProvider>{children}</ThemeProvider>
         </body>
       </html>
