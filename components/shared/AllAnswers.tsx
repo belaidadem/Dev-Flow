@@ -10,7 +10,7 @@ import Votes from './Votes';
 
 interface Props {
   questionId: string;
-  userId: string;
+  userId: string | undefined;
   totalAnswers: number;
   page?: number;
   filter?: string;
@@ -71,7 +71,7 @@ const AllAnswers = async ({
                   <Votes
                     type='answer'
                     itemId={JSON.parse(JSON.stringify(answer._id))}
-                    userId={JSON.parse(JSON.stringify(userId))}
+                    userId={userId}
                     upvotes={answer.upvotes.length}
                     hasupVoted={answer.upvotes.includes(userId)}
                     hasSaved={false}

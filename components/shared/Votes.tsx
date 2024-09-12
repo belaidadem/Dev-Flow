@@ -5,22 +5,15 @@ import { voteQuestion } from '@/lib/actions/question.action';
 import { saveQuestion } from '@/lib/actions/user.action';
 import { formatNumber } from '@/lib/utils';
 import Image from 'next/image';
-import {
-  usePathname,
-  useRouter
-} from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
-import React, {
-  useEffect,
-  useState,
-  useRef
-} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { toast } from '../ui/use-toast';
 
 interface Props {
   type: string;
   itemId: string;
-  userId: string;
+  userId: string | undefined;
   upvotes: number;
   hasupVoted: boolean;
   downvotes: number;
@@ -49,8 +42,7 @@ const Votes = ({
     if (!userId)
       return toast({
         title: 'Please log in',
-        description:
-          'To save questions or upvote/downvote, please log in.'
+        description: 'To save questions or upvote/downvote, please log in.'
       });
     setIsVoting(true);
     await saveQuestion({
@@ -65,8 +57,7 @@ const Votes = ({
     if (!userId)
       return toast({
         title: 'Please log in',
-        description:
-          'To save questions or upvote/downvote, please log in.'
+        description: 'To save questions or upvote/downvote, please log in.'
       });
     setIsVoting(true);
     const result: any = JSON.parse(
@@ -95,19 +86,16 @@ const Votes = ({
           action === 'upvote'
             ? hasupVoted
               ? 'Upvote removed successfully'
-              : 'You have successfully upvoted this ' +
-                `${type}.`
+              : 'You have successfully upvoted this ' + `${type}.`
             : hasdownVoted
               ? 'Downvote removed successfully'
-              : 'You have successfully downvoted this ' +
-                `${type}.`
+              : 'You have successfully downvoted this ' + `${type}.`
       });
     } else {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description:
-          'An error occurred while trying to vote for this question.'
+        description: 'An error occurred while trying to vote for this question.'
       });
     }
     setIsVoting(false);

@@ -14,9 +14,7 @@ import {
   UpdateUserParams
 } from './shared.types';
 import { revalidatePath } from 'next/cache';
-import Question, {
-  IQuestion
-} from '@/database/question.model';
+import Question, { IQuestion } from '@/database/question.model';
 
 import Tag from '@/database/tags.model';
 import { getQuestionById } from './question.action';
@@ -43,9 +41,7 @@ export async function getUserById(params: any) {
   }
 }
 
-export async function createUser(
-  params: CreateUserParams
-) {
+export async function createUser(params: CreateUserParams) {
   try {
     await connectToDatabase();
 
@@ -58,21 +54,15 @@ export async function createUser(
   }
 }
 
-export async function updateUser(
-  params: UpdateUserParams
-) {
+export async function updateUser(params: UpdateUserParams) {
   try {
     await connectToDatabase();
 
     const { clerkId, updateData, path } = params;
 
-    const user = await User.findOneAndUpdate(
-      { clerkId },
-      updateData,
-      {
-        new: true
-      }
-    );
+    const user = await User.findOneAndUpdate({ clerkId }, updateData, {
+      new: true
+    });
 
     revalidatePath(path);
 
@@ -80,9 +70,7 @@ export async function updateUser(
   } catch (error) {}
 }
 
-export async function deleteUser(
-  params: DeleteUserParams
-) {
+export async function deleteUser(params: DeleteUserParams) {
   try {
     await connectToDatabase();
 
@@ -106,9 +94,7 @@ export async function deleteUser(
     // TODO: Delete user answers, comments, etc.
 
     // Delete the user
-    const deletedUser = await User.findByIdAndDelete(
-      user._id
-    );
+    const deletedUser = await User.findByIdAndDelete(user._id);
 
     return deletedUser;
   } catch (error) {
@@ -116,18 +102,11 @@ export async function deleteUser(
     throw error;
   }
 }
-export async function getAllUsers(
-  params: GetAllUsersParams
-) {
+export async function getAllUsers(params: GetAllUsersParams) {
   try {
     await connectToDatabase();
 
-    const {
-      page = 1,
-      pageSize = 20,
-      filter,
-      searchQuery
-    } = params;
+    const { page = 1, pageSize = 20, filter, searchQuery } = params;
 
     const query: FilterQuery<typeof Question> = {};
 
@@ -168,8 +147,7 @@ export async function getAllUsers(
       .limit(pageSize)
       .sort(filterOption);
 
-    const totalUsers =
-      await User.countDocuments(query);
+    const totalUsers = await User.countDocuments(query);
 
     const isNext = totalUsers > skipAmount + pageSize;
 
@@ -182,7 +160,7 @@ export async function getAllUsers(
 
 interface SaveParams {
   itemid: string;
-  userid: string;
+  userid: string | undefined;
   hasSaved: boolean;
   path: string;
 }
@@ -213,28 +191,19 @@ export async function saveQuestion({
   }
 }
 
-export async function getSavedQuestions(
-  params: GetSavedQuestionsParams
-) {
+export async function getSavedQuestions(params: GetSavedQuestionsParams) {
   try {
     connectToDatabase();
 
-    const {
-      clerkId,
-      searchQuery,
-      filter,
-      page = 1,
-      pageSize = 2
-    } = params;
+    const { clerkId, searchQuery, filter, page = 1, pageSize = 2 } = params;
 
-    const query: FilterQuery<typeof Question> =
-      searchQuery
-        ? {
-            title: {
-              $regex: new RegExp(searchQuery, 'i')
-            }
+    const query: FilterQuery<typeof Question> = searchQuery
+      ? {
+          title: {
+            $regex: new RegExp(searchQuery, 'i')
           }
-        : {};
+        }
+      : {};
 
     let sortOption = {};
     switch (filter) {
@@ -261,11 +230,9 @@ export async function getSavedQuestions(
     }
 
     const skipAmount = (page - 1) * pageSize;
-    const totalQuestions =
-      await Question.countDocuments(query);
+    const totalQuestions = await Question.countDocuments(query);
 
-    const isNext =
-      totalQuestions > skipAmount + pageSize;
+    const isNext = totalQuestions > skipAmount + pageSize;
 
     const user = await User.findOne({
       clerkId
@@ -300,9 +267,7 @@ export async function getSavedQuestions(
   }
 }
 
-export async function getUserInfo(
-  params: GetUserByIdParams
-) {
+export async function getUserInfo(params: GetUserByIdParams) {
   try {
     await connectToDatabase();
 
@@ -316,32 +281,29 @@ export async function getUserInfo(
       throw new Error('User not found');
     }
 
-    const totalQuestions =
-      await Question.countDocuments({
-        author: user._id
-      });
+    const totalQuestions = await Question.countDocuments({
+      author: user._id
+    });
 
     const totalAnswers = await Answer.countDocuments({
       author: user._id
     });
 
-    const [questionUpvotes] = await Question.aggregate(
-      [
-        { $match: { author: user._id } },
-        {
-          $project: {
-            _id: 0,
-            upvotes: { $size: '$upvotes' }
-          }
-        },
-        {
-          $group: {
-            _id: null,
-            totalUpvotes: { $sum: '$upvotes' }
-          }
+    const [questionUpvotes] = await Question.aggregate([
+      { $match: { author: user._id } },
+      {
+        $project: {
+          _id: 0,
+          upvotes: { $size: '$upvotes' }
         }
-      ]
-    );
+      },
+      {
+        $group: {
+          _id: null,
+          totalUpvotes: { $sum: '$upvotes' }
+        }
+      }
+    ]);
     const [answerUpvotes] = await Answer.aggregate([
       { $match: { author: user._id } },
       {
@@ -406,21 +368,17 @@ export async function getUserInfo(
   }
 }
 
-export async function getUserQuestions(
-  params: GetUserStatsParams
-) {
+export async function getUserQuestions(params: GetUserStatsParams) {
   try {
     await connectToDatabase();
 
     const { userId, page = 1, pageSize = 10 } = params;
 
     const skipAmount = (page - 1) * pageSize;
-    const totalQuestions =
-      await Question.countDocuments({
-        author: userId
-      });
-    const isNext =
-      totalQuestions > skipAmount + pageSize;
+    const totalQuestions = await Question.countDocuments({
+      author: userId
+    });
+    const isNext = totalQuestions > skipAmount + pageSize;
 
     const userQuestions = await Question.find({
       author: userId
@@ -450,21 +408,17 @@ export async function getUserQuestions(
   }
 }
 
-export async function getUserAnswers(
-  params: GetUserStatsParams
-) {
+export async function getUserAnswers(params: GetUserStatsParams) {
   try {
     await connectToDatabase();
 
     const { userId, page = 1, pageSize = 10 } = params;
 
     const skipAmount = (page - 1) * pageSize;
-    const totalAnswers: number =
-      await Answer.countDocuments({
-        author: userId
-      });
-    const isNext =
-      totalAnswers > skipAmount + pageSize;
+    const totalAnswers: number = await Answer.countDocuments({
+      author: userId
+    });
+    const isNext = totalAnswers > skipAmount + pageSize;
 
     const answers = await Answer.find({
       author: userId

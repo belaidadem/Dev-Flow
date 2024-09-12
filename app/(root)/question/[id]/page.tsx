@@ -81,23 +81,6 @@ const Page = async ({ params, searchParams }: Params) => {
                 mongoUser?._id ? mongoUser?.saved.includes(result._id) : false
               }
             />
-            {/* 
-            <Votes
-                    type='answer'
-                    itemId={JSON.stringify(answer._id)}
-                    userId={JSON.stringify(userId)}
-                    upvotes={answer.upvotes.length}
-                    hasupVoted={answer.upvotes.includes(
-                      userId
-                    )}
-                    hasSaved={false}
-                    downvotes={answer.downvotes.length}
-                    hasdownVoted={answer.downvotes.includes(
-                      userId
-                    )}
-                  />
-            
-            */}
           </div>
         </div>
         <h2 className='h2-semibold text-dark200_light900 mt-3.5 w-full text-left'>

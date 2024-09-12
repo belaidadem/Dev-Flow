@@ -17,18 +17,11 @@ import Answer from '@/database/answer.model';
 import Interaction from '@/database/interaction.model';
 import { FilterQuery } from 'mongoose';
 
-export async function getQuestions(
-  params: GetQuestionsParams
-) {
+export async function getQuestions(params: GetQuestionsParams) {
   try {
     await connectToDatabase();
 
-    const {
-      page = 1,
-      pageSize = 20,
-      searchQuery,
-      filter
-    } = params;
+    const { page = 1, pageSize = 20, searchQuery, filter } = params;
 
     // calculate skip amount
     const skipAmount = (page - 1) * pageSize;
@@ -73,11 +66,9 @@ export async function getQuestions(
       .limit(pageSize)
       .sort(sortCriteria);
 
-    const totalQuetions =
-      await Question.countDocuments(query);
+    const totalQuetions = await Question.countDocuments(query);
 
-    const isNext =
-      totalQuetions > skipAmount + questions.length;
+    const isNext = totalQuetions > skipAmount + questions.length;
 
     return { questions, isNext };
   } catch (error) {
@@ -86,15 +77,12 @@ export async function getQuestions(
   }
 }
 
-export async function createQuestion(
-  params: CreateQuestionParams
-) {
+export async function createQuestion(params: CreateQuestionParams) {
   // eslint-disable-next-line no-empty
   try {
     await connectToDatabase();
 
-    const { title, content, tags, author, path } =
-      params;
+    const { title, content, tags, author, path } = params;
 
     // create question
     const question = await Question.create({
@@ -146,17 +134,13 @@ export async function createQuestion(
   }
 }
 
-export async function getQuestionById(
-  params: GetQuestionByIdParams
-) {
+export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
     await connectToDatabase();
 
     const { questionId } = params;
 
-    const question = await Question.findById(
-      questionId
-    )
+    const question = await Question.findById(questionId)
       .populate({
         path: 'author',
         model: User,
@@ -178,7 +162,7 @@ export async function getQuestionById(
 interface Props {
   type: string;
   itemid: string;
-  userid: string;
+  userid: string | undefined;
   action: string;
   hasupVoted: boolean;
   hasdownVoted: boolean;
@@ -199,9 +183,7 @@ export async function voteQuestion({
 
     let update;
 
-    const item = await (
-      type === 'question' ? Question : Answer
-    )
+    const item = await (type === 'question' ? Question : Answer)
       .findById(itemid)
       .populate('author');
     const { author } = item;
@@ -247,10 +229,7 @@ export async function voteQuestion({
     await User.findByIdAndUpdate(item.author, {
       $inc: {
         reputation:
-          action === 'upvote' &&
-          !item.upvotes.includes(author._id)
-            ? 10
-            : -10
+          action === 'upvote' && !item.upvotes.includes(author._id) ? 10 : -10
       }
     });
 
@@ -268,9 +247,7 @@ export async function voteQuestion({
   }
 }
 
-export async function deleteQuestion(
-  params: DeleteQuestionParams
-) {
+export async function deleteQuestion(params: DeleteQuestionParams) {
   try {
     await connectToDatabase();
 
@@ -304,19 +281,13 @@ export async function deleteQuestion(
   }
 }
 
-export async function editQuestion(
-  params: EditQuestionParams
-) {
+export async function editQuestion(params: EditQuestionParams) {
   try {
     await connectToDatabase();
 
-    const { questionId, title, content, path } =
-      params;
+    const { questionId, title, content, path } = params;
 
-    const question =
-      await Question.findById(questionId).populate(
-        'tags'
-      );
+    const question = await Question.findById(questionId).populate('tags');
 
     if (!question) {
       throw new Error('Question not found');
