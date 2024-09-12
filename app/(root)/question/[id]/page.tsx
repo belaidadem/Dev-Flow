@@ -38,8 +38,12 @@ const Page = async ({ params, searchParams }: Params) => {
   let mongoUser;
 
   if (clerkId) {
-    mongoUser = await getUserById({ userId: clerkId });
+    mongoUser = JSON.parse(
+      JSON.stringify(await getUserById({ userId: clerkId }))
+    );
   }
+
+  console.log({ mongoUser, questionId });
 
   return (
     <>
