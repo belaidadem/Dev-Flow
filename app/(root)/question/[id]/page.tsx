@@ -6,10 +6,7 @@ import RenderTag from '@/components/shared/RenderTag';
 import Votes from '@/components/shared/Votes';
 import { getQuestionById } from '@/lib/actions/question.action';
 import { getUserById } from '@/lib/actions/user.action';
-import {
-  formatNumber,
-  getTimestamp
-} from '@/lib/utils';
+import { formatNumber, getTimestamp } from '@/lib/utils';
 import { SearchParamsProps } from '@/types';
 import { auth } from '@clerk/nextjs/server';
 import Image from 'next/image';
@@ -30,15 +27,12 @@ interface Params extends SearchParamsProps {
   };
 }
 
-const Page = async ({
-  params,
-  searchParams
-}: Params) => {
+const Page = async ({ params, searchParams }: Params) => {
   const { question: result } = await getQuestionById({
     questionId: params.id
   });
 
-  const questionId = params.id;
+  const questionId = result._id;
   const { userId: clerkId } = auth();
 
   let mongoUser;
@@ -69,32 +63,20 @@ const Page = async ({
           <div className='flex justify-end'>
             <Votes
               type='question'
-              itemId={JSON.parse(
-                JSON.stringify(questionId)
-              )}
+              itemId={JSON.parse(JSON.stringify(questionId))}
               userId={mongoUser?._id}
               upvotes={result.upvotes.length}
               hasupVoted={
-                mongoUser?._id
-                  ? result.upvotes.includes(
-                      mongoUser?._id
-                    )
-                  : false
+                mongoUser?._id ? result.upvotes.includes(mongoUser?._id) : false
               }
               downvotes={result.downvotes?.length}
               hasdownVoted={
                 mongoUser?._id
-                  ? result.downvotes?.includes(
-                      mongoUser?._id
-                    )
+                  ? result.downvotes?.includes(mongoUser?._id)
                   : false
               }
               hasSaved={
-                mongoUser?._id
-                  ? mongoUser?.saved.includes(
-                      result._id
-                    )
-                  : false
+                mongoUser?._id ? mongoUser?.saved.includes(result._id) : false
               }
             />
             {/* 
@@ -132,9 +114,7 @@ const Page = async ({
         <Metric
           imgUrl='/assets/icons/message.svg'
           alt='answers'
-          value={
-            formatNumber(result.answers.length) || 0
-          }
+          value={formatNumber(result.answers.length) || 0}
           title=' Answers'
           textStyles='small-medium text-dark400_light800'
         />
@@ -150,20 +130,14 @@ const Page = async ({
 
       <div className='mt-8 flex flex-wrap gap-2'>
         {result.tags.map((tag: any) => (
-          <RenderTag
-            key={tag._id}
-            _id={tag._id}
-            name={tag.name}
-          />
+          <RenderTag key={tag._id} _id={tag._id} name={tag.name} />
         ))}
       </div>
 
       <AllAnswers
         questionId={result._id}
         userId={mongoUser?._id}
-        page={
-          searchParams?.page ? +searchParams.page : 1
-        }
+        page={searchParams?.page ? +searchParams.page : 1}
         filter={searchParams?.filter}
         totalAnswers={result.answers.length}
       />
