@@ -32,19 +32,14 @@ const AllAnswers = async ({
   return (
     <div className='mt-11'>
       <div className='flex items-center justify-between'>
-        <h3 className='primary-text-gradient'>
-          {totalAnswers} Answers
-        </h3>
+        <h3 className='primary-text-gradient'>{totalAnswers} Answers</h3>
 
         <Filter filters={AnswerFilters} />
       </div>
 
       <div>
         {result.answers.map((answer) => (
-          <article
-            key={answer._id}
-            className='light-border border-b py-10'
-          >
+          <article key={answer._id} className='light-border border-b py-10'>
             <div className='flex items-center justify-between'>
               {/* SPAN ID */}
               <div className='mb-8 flex w-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2'>
@@ -65,8 +60,7 @@ const AllAnswers = async ({
                     </p>
 
                     <p className='small-regular text-light400_light500 ml-1 mt-0.5 line-clamp-1'>
-                      answered{' '}
-                      {getTimestamp(answer.createdAt)}
+                      answered {getTimestamp(answer.createdAt)}
                     </p>
                   </div>
                 </Link>
@@ -76,17 +70,13 @@ const AllAnswers = async ({
                 >
                   <Votes
                     type='answer'
-                    itemId={JSON.stringify(answer._id)}
-                    userId={JSON.stringify(userId)}
+                    itemId={JSON.parse(JSON.stringify(answer._id))}
+                    userId={JSON.parse(JSON.stringify(userId))}
                     upvotes={answer.upvotes.length}
-                    hasupVoted={answer.upvotes.includes(
-                      userId
-                    )}
+                    hasupVoted={answer.upvotes.includes(userId)}
                     hasSaved={false}
                     downvotes={answer.downvotes.length}
-                    hasdownVoted={answer.downvotes.includes(
-                      userId
-                    )}
+                    hasdownVoted={answer.downvotes.includes(userId)}
                   />
                 </div>
               </div>
