@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@/context/ThemeProvider';
 
 import {
@@ -16,45 +16,51 @@ import { themes } from '@/constants';
 const Theme = () => {
   const { mode, setMode } = useTheme();
 
+  // Use loading state to prevent rendering until mode is determined
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (mode) {
+      setIsLoaded(true);
+    }
+  }, [mode]);
+
   return (
     <Menubar className='relative border-none bg-transparent shadow-none'>
       <MenubarMenu>
         <MenubarTrigger className='min-w-[50px] focus:bg-light-900 data-[state=open]:bg-light-900 dark:focus:bg-dark-200 dark:data-[state=open]:bg-dark-200'>
-          {mode === 'light' ? (
-            <Image
-              src='/assets/icons/sun.svg'
-              alt='sun'
-              width={20}
-              height={20}
-              className='active-theme'
-            />
-          ) : (
-            <Image
-              src='/assets/icons/moon.svg'
-              alt='moon'
-              width={20}
-              height={20}
-              className='active-theme'
-            />
-          )}
+          {/* Prevent icon rendering until mode is determined */}
+          {isLoaded ? (
+            mode === 'light' ? (
+              <Image
+                src='/assets/icons/sun.svg'
+                alt='sun'
+                width={20}
+                height={20}
+                className='active-theme'
+              />
+            ) : (
+              <Image
+                src='/assets/icons/moon.svg'
+                alt='moon'
+                width={20}
+                height={20}
+                className='active-theme'
+              />
+            )
+          ) : null}
         </MenubarTrigger>
         <MenubarContent className='absolute -right-12 mt-3 min-w-[120px] rounded border border-slate-300/30 bg-light-900 py-2 dark:border-dark-400 dark:bg-dark-300'>
           {themes.map((item) => (
             <MenubarItem
               key={item.value}
               onClick={() => {
-                setMode(item.value);
-                if (
-                  item.value !==
-                  'system'
-                ) {
-                  localStorage.theme =
-                    item.value;
+                if (item.value !== 'system') {
+                  localStorage.setItem('theme', item.value);
                 } else {
-                  localStorage.removeItem(
-                    'theme'
-                  );
+                  localStorage.removeItem('theme');
                 }
+                setMode(item.value);
               }}
               className={`flex items-center gap-4  px-2.5 py-2 focus:bg-light-800 dark:focus:bg-dark-400 ${mode === item.value ? 'bg-light-800 dark:bg-dark-400' : ''}`}
             >
