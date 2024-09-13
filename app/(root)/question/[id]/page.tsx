@@ -28,11 +28,7 @@ interface Params extends SearchParamsProps {
 }
 
 const Page = async ({ params, searchParams }: Params) => {
-<<<<<<< Updated upstream
   const { question: result } = await getQuestionById({
-=======
-  const result = await getQuestionById({
->>>>>>> Stashed changes
     questionId: params.id
   });
 
@@ -69,7 +65,6 @@ const Page = async ({ params, searchParams }: Params) => {
           <div className='flex justify-end'>
             <Votes
               type='question'
-<<<<<<< Updated upstream
               itemId={JSON.parse(JSON.stringify(questionId))}
               userId={mongoUser?._id}
               upvotes={result.upvotes.length}
@@ -85,15 +80,6 @@ const Page = async ({ params, searchParams }: Params) => {
               hasSaved={
                 mongoUser?._id ? mongoUser?.saved.includes(result._id) : false
               }
-=======
-              itemId={JSON.stringify(result._id)}
-              userId={JSON.stringify(mongoUser._id ? mongoUser._id : undefined)}
-              upvotes={result.upvotes.length}
-              hasupVoted={result.upvotes.includes(mongoUser._id)}
-              downvotes={result.downvotes?.length}
-              hasdownVoted={result.downvotes?.includes(mongoUser._id)}
-              hasSaved={mongoUser?.saved.includes(result._id)}
->>>>>>> Stashed changes
             />
           </div>
         </div>
@@ -135,11 +121,7 @@ const Page = async ({ params, searchParams }: Params) => {
 
       <AllAnswers
         questionId={result._id}
-<<<<<<< Updated upstream
         userId={mongoUser?._id}
-=======
-        userId={mongoUser._id}
->>>>>>> Stashed changes
         page={searchParams?.page ? +searchParams.page : 1}
         filter={searchParams?.filter}
         totalAnswers={result.answers.length}

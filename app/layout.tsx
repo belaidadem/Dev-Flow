@@ -1,10 +1,6 @@
 /* eslint-disable camelcase */
 import { ClerkProvider } from '@clerk/nextjs';
 import { Inter, Space_Grotesk } from 'next/font/google';
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 import type { Metadata } from 'next';
 
 import './globals.css';
@@ -64,13 +60,10 @@ export default function RootLayout({
       }}
     >
       <html lang='en'>
-<<<<<<< Updated upstream
-=======
         <head>
           {/* This script ensures theme is set before page render */}
           <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
         </head>
->>>>>>> Stashed changes
         <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
           <ThemeProvider>{children}</ThemeProvider>
         </body>
